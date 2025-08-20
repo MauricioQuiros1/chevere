@@ -137,7 +137,7 @@ Mensaje: ${formData.mensaje}`
                 formVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"
               }`}
             >
-              <Card className="shadow-xl hover:shadow-2xl transition-all duration-500 border-2 hover:border-amber-200 transform hover:-translate-y-1">
+              <Card className="py-6 shadow-xl hover:shadow-2xl transition-all duration-500 border-2 hover:border-amber-200 transform hover:-translate-y-1">
                 <CardHeader>
                   <CardTitle className="text-2xl font-serif text-gray-900 flex items-center">
                     <Send className="h-6 w-6 mr-2 text-amber-600 animate-pulse" />
@@ -289,7 +289,7 @@ Mensaje: ${formData.mensaje}`
                 cardsVisible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8"
               }`}
             >
-              <Card className="shadow-xl hover:shadow-2xl transition-all duration-500 border-2 hover:border-green-200 transform hover:-translate-y-1 animate-fade-in-up">
+              <Card className="py-6 shadow-xl hover:shadow-2xl transition-all duration-500 border-2 hover:border-green-200 transform hover:-translate-y-1 animate-fade-in-up">
                 <CardHeader>
                   <CardTitle className="text-2xl font-serif text-gray-900 flex items-center">
                     <MessageCircle className="h-6 w-6 mr-2 text-green-600 animate-bounce" />
@@ -314,7 +314,7 @@ Mensaje: ${formData.mensaje}`
 
               {/* Business Hours Card */}
               <Card
-                className="shadow-xl hover:shadow-2xl transition-all duration-500 border-2 hover:border-amber-200 transform hover:-translate-y-1 animate-fade-in-up"
+                className="py-6 shadow-xl hover:shadow-2xl transition-all duration-500 border-2 hover:border-amber-200 transform hover:-translate-y-1 animate-fade-in-up"
                 style={{ animationDelay: "0.2s" }}
               >
                 <CardHeader>
