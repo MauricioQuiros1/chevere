@@ -2,14 +2,32 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { MapPin, Phone, Mail, Clock, Facebook, Instagram, MessageCircle } from "lucide-react"
+import { sanityClient } from "@/lib/sanity"
+import { generalQuery } from "@/lib/queries"
+
+type GeneralData = {
+  logoUrl?: string | null
+  location?: string | null
+  callNumber?: string | null
+  email?: string | null
+  openingHours?: { days?: string | null; hours?: string | null }[]
+  whatsappNumbers?: string[]
+  whatsappChannel?: string | null
+  social?: { facebook?: string | null; instagram?: string | null }
+}
 
 export function Footer() {
   const [email, setEmail] = useState("")
+  const [general, setGeneral] = useState<GeneralData | null>(null)
+
+  useEffect(() => {
+    sanityClient.fetch(generalQuery).then((data) => setGeneral(data || null))
+  }, [])
 
   const handleNewsletterSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -19,7 +37,9 @@ export function Footer() {
   }
 
   const handleWhatsAppContact = () => {
-    window.open("https://wa.me/573184598635?text=Hola, me interesa información sobre sus tours", "_blank")
+    const number = general?.whatsappNumbers?.[0] || "573184598635"
+    const text = encodeURIComponent("Hola, me interesa información sobre sus tours")
+    window.open(`https://wa.me/${number}?text=${text}`, "_blank")
   }
 
   return (
@@ -29,7 +49,7 @@ export function Footer() {
           {/* Company Info */}
           <div className="space-y-4 max-w-sm">
             <Link href="/" className="flex items-center space-x-2">
-              <Image src="/logo.png" alt="Chevere Bogotá Tours" width={40} height={40} className="h-10 w-auto" />
+              <Image src={general?.logoUrl || "/logo.png"} alt="Chevere Bogotá Tours" width={40} height={40} className="h-10 w-auto" />
               <span className="text-xl font-serif font-bold">Chevere Bogotá Tours</span>
             </Link>
             <p className="text-gray-300 text-sm leading-relaxed">
@@ -38,14 +58,14 @@ export function Footer() {
             </p>
             <div className="flex space-x-4">
               <a
-                href="#"
+                href={general?.social?.facebook || "#"}
                 className="text-gray-400 hover:text-white transition-colors duration-200"
                 aria-label="Facebook"
               >
                 <Facebook className="h-5 w-5" />
               </a>
               <a
-                href="#"
+                href={general?.social?.instagram || "#"}
                 className="text-gray-400 hover:text-white transition-colors duration-200"
                 aria-label="Instagram"
               >
@@ -62,23 +82,31 @@ export function Footer() {
               <ul className="space-y-3">
                 <li className="flex items-start space-x-3">
                   <MapPin className="h-4 w-4 text-amber-400 mt-0.5 flex-shrink-0" />
-                  <span className="text-gray-300 text-sm">Bogotá, Colombia</span>
+                  <span className="text-gray-300 text-sm">{general?.location || "Bogotá, Colombia"}</span>
                 </li>
                 <li className="flex items-start space-x-3">
                   <Phone className="h-4 w-4 text-amber-400 mt-0.5 flex-shrink-0" />
                   <div className="text-gray-300 text-sm">
-                    <div>+57 305 479 8365</div>
+                    <div>{general?.callNumber ? `+${general.callNumber}` : "+57 305 479 8365"}</div>
                   </div>
                 </li>
                 <li className="flex items-start space-x-3">
                   <Mail className="h-4 w-4 text-amber-400 mt-0.5 flex-shrink-0" />
-                  <span className="text-gray-300 text-sm">reservas@cheverebogotatravel.com</span>
+                  <span className="text-gray-300 text-sm">{general?.email || "reservas@cheverebogotatravel.com"}</span>
                 </li>
                 <li className="flex items-start space-x-3">
                   <Clock className="h-4 w-4 text-amber-400 mt-0.5 flex-shrink-0" />
                   <div className="text-gray-300 text-sm">
-                    <div>Lunes a Sábado</div>
-                    <div>9am - 6pm</div>
+                    {(general?.openingHours && general.openingHours.length > 0) ? (
+                      general.openingHours.map((o, i) => (
+                        <div key={i}>{`${o?.days || ""} ${o?.hours ? `- ${o.hours}` : ""}`}</div>
+                      ))
+                    ) : (
+                      <>
+                        <div>Lunes a Sábado</div>
+                        <div>9am - 6pm</div>
+                      </>
+                    )}
                   </div>
                 </li>
               </ul>
@@ -99,11 +127,13 @@ export function Footer() {
                 Recibe en tu celular nuestras promociones, novedades y tips de viaje en tiempo real. <br />
                 Haz parte de nuestra comunidad exclusiva.
               </p>
-              <form onSubmit={handleNewsletterSubmit} className="space-y-3">
-                <Button type="submit" className="w-full bg-amber-600 hover:bg-amber-700 text-white text-sm">
-                  Ingresar al canal
+              <div className="space-y-3">
+                <Button asChild className="w-full bg-amber-600 hover:bg-amber-700 text-white text-sm">
+                  <a href={general?.whatsappChannel || "#"} target="_blank" rel="noopener noreferrer">
+                    Ingresar al canal
+                  </a>
                 </Button>
-              </form>
+              </div>
             </div>
           </div>
         </div>

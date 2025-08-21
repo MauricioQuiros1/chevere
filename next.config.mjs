@@ -6,10 +6,12 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  images: { domains: [
-    "nomadascolombiatravel.com",
-    // otros dominios
-  ],
+  images: {
+    domains: [
+      "nomadascolombiatravel.com",
+      "cdn.sanity.io",
+      // otros dominios
+    ],
     unoptimized: true,
   },
   async redirects() {

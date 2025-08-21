@@ -3,10 +3,15 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { MessageCircle } from "lucide-react"
+import { sanityClient } from "@/lib/sanity"
+import { generalQuery } from "@/lib/queries"
+
+type GeneralData = { whatsappNumbers?: string[] }
 
 export function WhatsAppFloat() {
   const [isVisible, setIsVisible] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const [general, setGeneral] = useState<GeneralData | null>(null)
 
   useEffect(() => {
     const checkMobile = () => {
@@ -30,8 +35,14 @@ export function WhatsAppFloat() {
   }, [])
 
   const handleWhatsAppClick = () => {
-    window.open("https://wa.me/573054798365?text=Hola, quiero más información 👋", "_blank")
+    const number = general?.whatsappNumbers?.[0] || "573054798365"
+    const text = encodeURIComponent("Hola, quiero más información 👋")
+    window.open(`https://wa.me/${number}?text=${text}`, "_blank")
   }
+
+  useEffect(() => {
+    sanityClient.fetch(generalQuery).then((data) => setGeneral(data || null))
+  }, [])
 
   if (!isVisible) return null
 

@@ -19,3 +19,17 @@ export const heroQuery = `
   }
 }
 `
+
+export const generalQuery = `
+*[_type == "general"][0]{
+  location,
+  callNumber,
+  whatsappNumbers,
+  slogan,
+  email,
+  whatsappChannel,
+  openingHours[]{days, hours},
+  social{facebook, instagram},
+  "logoUrl": logo.asset->url
+}
+`

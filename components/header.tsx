@@ -7,9 +7,18 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Phone } from "lucide-react"
+import { sanityClient } from "@/lib/sanity"
+import { generalQuery } from "@/lib/queries"
+
+type GeneralData = {
+  logoUrl?: string | null
+  callNumber?: string | null
+  whatsappNumbers?: string[]
+}
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
+  const [general, setGeneral] = useState<GeneralData | null>(null)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [mobileToursOpen, setMobileToursOpen] = useState(false) // mobile submenu
   const [toursOpen, setToursOpen] = useState(false)
@@ -22,11 +31,14 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
+  useEffect(() => {
+    sanityClient.fetch(generalQuery).then((data) => setGeneral(data || null))
+  }, [])
+
   const handleWhatsAppClick = () => {
-    window.open(
-      "https://wa.me/573184598635?text=Hola, me interesa información sobre sus servicios",
-      "_blank"
-    )
+    const number = general?.whatsappNumbers?.[0] || "573184598635"
+    const text = encodeURIComponent("Hola, me interesa información sobre sus servicios")
+    window.open(`https://wa.me/${number}?text=${text}`, "_blank")
   }
 
   const handleTrasladosClick = (e: React.MouseEvent) => {
@@ -60,7 +72,7 @@ export function Header() {
               className="flex-shrink-0 transition-all duration-300 hover:scale-110 hover:rotate-3 group"
             >
               <Image
-                src="/logo.png"
+                src={general?.logoUrl || "/logo.png"}
                 alt="Chevere Bogotá Tours"
                 width={48}
                 height={48}
@@ -72,9 +84,8 @@ export function Header() {
             <nav className="hidden lg:flex items-center gap-8">
               <Link
                 href="/"
-                className={`nav-link-enhanced text-gray-700 hover:text-amber-700 font-medium ${
-                  isActivePage("/") ? "text-amber-700" : ""
-                }`}
+                className={`nav-link-enhanced text-gray-700 hover:text-amber-700 font-medium ${isActivePage("/") ? "text-amber-700" : ""
+                  }`}
                 aria-current={isActivePage("/") ? "page" : undefined}
               >
                 Inicio
@@ -82,9 +93,8 @@ export function Header() {
 
               <Link
                 href="/nosotros"
-                className={`nav-link-enhanced text-gray-700 hover:text-amber-700 font-medium ${
-                  isActivePage("/nosotros") ? "text-amber-700" : ""
-                }`}
+                className={`nav-link-enhanced text-gray-700 hover:text-amber-700 font-medium ${isActivePage("/nosotros") ? "text-amber-700" : ""
+                  }`}
                 aria-current={isActivePage("/nosotros") ? "page" : undefined}
               >
                 Nosotros
@@ -141,9 +151,8 @@ export function Header() {
 
               <Link
                 href="/contacto"
-                className={`nav-link-enhanced text-gray-700 hover:text-amber-700 font-medium ${
-                  isActivePage("/contacto") ? "text-amber-700" : ""
-                }`}
+                className={`nav-link-enhanced text-gray-700 hover:text-amber-700 font-medium ${isActivePage("/contacto") ? "text-amber-700" : ""
+                  }`}
                 aria-current={isActivePage("/contacto") ? "page" : undefined}
               >
                 Contacto
@@ -167,19 +176,16 @@ export function Header() {
             >
               <div className="w-6 h-6 flex flex-col justify-center items-center">
                 <span
-                  className={`block w-5 h-0.5 bg-gray-700 transition-all duration-300 ${
-                    isMobileMenuOpen ? "rotate-45 translate-y-1" : ""
-                  }`}
+                  className={`block w-5 h-0.5 bg-gray-700 transition-all duration-300 ${isMobileMenuOpen ? "rotate-45 translate-y-1" : ""
+                    }`}
                 />
                 <span
-                  className={`block w-5 h-0.5 bg-gray-700 transition-all duration-300 mt-1 ${
-                    isMobileMenuOpen ? "opacity-0" : ""
-                  }`}
+                  className={`block w-5 h-0.5 bg-gray-700 transition-all duration-300 mt-1 ${isMobileMenuOpen ? "opacity-0" : ""
+                    }`}
                 />
                 <span
-                  className={`block w-5 h-0.5 bg-gray-700 transition-all duration-300 mt-1 ${
-                    isMobileMenuOpen ? "-rotate-45 -translate-y-1" : ""
-                  }`}
+                  className={`block w-5 h-0.5 bg-gray-700 transition-all duration-300 mt-1 ${isMobileMenuOpen ? "-rotate-45 -translate-y-1" : ""
+                    }`}
                 />
               </div>
             </button>
@@ -187,27 +193,24 @@ export function Header() {
 
           {/* Mobile Menu */}
           <div
-            className={`lg:hidden overflow-hidden transition-all duration-300 ${
-              isMobileMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-            }`}
+            className={`lg:hidden overflow-hidden transition-all duration-300 ${isMobileMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+              }`}
           >
             <nav className="pt-4 pb-2 space-y-2">
               <Link
                 href="/"
-                className={`mobile-menu-item block px-4 py-2 rounded-lg transition-all duration-300 hover:bg-amber-50 hover:text-amber-700 hover:translate-x-2 ${
-                  isActivePage("/") ? "bg-amber-50 text-amber-700" : "text-gray-700"
-                }`}
+                className={`mobile-menu-item block px-4 py-2 rounded-lg transition-all duration-300 hover:bg-amber-50 hover:text-amber-700 hover:translate-x-2 ${isActivePage("/") ? "bg-amber-50 text-amber-700" : "text-gray-700"
+                  }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Inicio
               </Link>
               <Link
                 href="/nosotros"
-                className={`mobile-menu-item block px-4 py-2 rounded-lg transition-all duration-300 hover:bg-amber-50 hover:text-amber-700 hover:translate-x-2 ${
-                  isActivePage("/nosotros")
+                className={`mobile-menu-item block px-4 py-2 rounded-lg transition-all duration-300 hover:bg-amber-50 hover:text-amber-700 hover:translate-x-2 ${isActivePage("/nosotros")
                     ? "bg-amber-50 text-amber-700"
                     : "text-gray-700"
-                }`}
+                  }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Nosotros
@@ -228,9 +231,8 @@ export function Header() {
 
                 <div
                   id="mobile-tours-submenu"
-                  className={`overflow-hidden transition-all ${
-                    mobileToursOpen ? "max-h-64 mt-1" : "max-h-0"
-                  }`}
+                  className={`overflow-hidden transition-all ${mobileToursOpen ? "max-h-64 mt-1" : "max-h-0"
+                    }`}
                 >
                   <div className="ml-2 rounded-md ">
                     <Link
@@ -277,11 +279,10 @@ export function Header() {
               </button>
               <Link
                 href="/contacto"
-                className={`mobile-menu-item block px-4 py-2 rounded-lg transition-all duration-300 hover:bg-amber-50 hover:text-amber-700 hover:translate-x-2 ${
-                  isActivePage("/contacto")
+                className={`mobile-menu-item block px-4 py-2 rounded-lg transition-all duration-300 hover:bg-amber-50 hover:text-amber-700 hover:translate-x-2 ${isActivePage("/contacto")
                     ? "bg-amber-50 text-amber-700"
                     : "text-gray-700"
-                }`}
+                  }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Contacto
