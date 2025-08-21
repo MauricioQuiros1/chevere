@@ -8,92 +8,24 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { MapPin, Clock, Users, ChevronLeft, ChevronRight } from "lucide-react"
 import { ValidatedImage } from "./image-validator"
+import { sanityClient } from "@/lib/sanity"
+import { toursListQuery } from "@/lib/queries"
 
-const tours = [
-  {
-    id: "hacienda-cafetera-coloma",
-    title: "Tour Hacienda Cafetera Coloma",
-    description: "Vive la auténtica cultura cafetera colombiana en una joya ubicada en Fusagasugá.",
-    image: "https://corsproxy.io/?https://images.unsplash.com/photo-1559827260-dc66d5282d5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-    fallback:
-      "https://corsproxy.io/?https://images.unsplash.com/photo-1447933601403-0c6688de566e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-    duration: "8 horas",
-    groupSize: "Máximo 4 personas",
-    location: "Fusagasugá",
-    price: "Desde US $72",
-    featured: true,
-  },
-  {
-    id: "catedral-sal-zipaquira",
-    title: "Catedral de Sal de Zipaquirá",
-    description: "Descubre esta maravilla arquitectónica construida en las profundidades de una mina de sal.",
-    image: "https://corsproxy.io/?https://upload.wikimedia.org/wikipedia/commons/9/98/Villa_de_leyva.jpg",
-    fallback:
-      "https://corsproxy.io/?https://images.unsplash.com/photo-1520637836862-4d197d17c90a?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-    duration: "6 horas",
-    groupSize: "Grupos pequeños",
-    location: "Zipaquirá",
-    price: "Desde US $65",
-    featured: false,
-  },
-  {
-    id: "laguna-guatavita",
-    title: "Laguna de Guatavita",
-    description: "Conoce la laguna sagrada de los muiscas y la leyenda de El Dorado.",
-    image:
-      "https://corsproxy.io/?https://images.unsplash.com/photo-1469474968028-56623f02e42e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-    fallback:
-      "https://corsproxy.io/?https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-    duration: "5 horas",
-    groupSize: "Grupos medianos",
-    location: "Guatavita",
-    price: "Desde US $58",
-    featured: false,
-  },
-  {
-    id: "cerro-monserrate",
-    title: "Cerro de Monserrate",
-    description: "Disfruta de las mejores vistas panorámicas de Bogotá desde 3,152 metros de altura.",
-    image:
-      "https://corsproxy.io/?https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/2017_Bogot%C3%A1_Bas%C3%ADlica_del_Se%C3%B1or_Ca%C3%ADdo_de_Monserrate.jpg/600px-2017_Bogot%C3%A1_Bas%C3%ADlica_del_Se%C3%B1or_Ca%C3%ADdo_de_Monserrate.jpg",
-    fallback:
-      "https://corsproxy.io/?https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Bogota%2C_viewed_from_Monserrate_%285620507403%29.jpg/600px-Bogota%2C_viewed_from_Monserrate_%285620507403%29.jpg",
-    duration: "4 horas",
-    groupSize: "Flexible",
-    location: "Bogotá",
-    price: "Desde US $45",
-    featured: false,
-  },
-  {
-    id: "museo-oro-centro-historico",
-    title: "Museo del Oro & Centro Histórico",
-    description: "Explora la riqueza cultural de Colombia en el corazón histórico de Bogotá.",
-    image: "https://corsproxy.io/?https://images.unsplash.com/photo-1555400082-8c5b3b8b4b8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-    fallback:
-      "https://corsproxy.io/?https://images.unsplash.com/photo-1531804055935-76f44d7c3621?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-    duration: "6 horas",
-    groupSize: "Grupos pequeños",
-    location: "Bogotá Centro",
-    price: "Desde US $55",
-    featured: false,
-  },
-  {
-    id: "villa-de-leyva",
-    title: "Villa de Leyva Día Completo",
-    description: "Recorre uno de los pueblos coloniales mejor conservados de Colombia.",
-    image: "https://corsproxy.io/?https://upload.wikimedia.org/wikipedia/commons/9/98/Villa_de_leyva.jpg",
-    fallback:
-      "https://corsproxy.io/?https://images.unsplash.com/photo-1531804055935-76f44d7c3621?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-    duration: "10 horas",
-    groupSize: "Grupos medianos",
-    location: "Villa de Leyva",
-    price: "Desde US $85",
-    featured: false,
-  },
-]
+type TourCard = {
+  id: string
+  title: string
+  description: string
+  image: string
+  fallback?: string
+  duration?: string
+  groupSize?: string
+  location?: string
+  price?: string
+}
 
 export function ToursSection() {
-  const [visibleCards, setVisibleCards] = useState<boolean[]>(new Array(tours.length).fill(false))
+  const [tours, setTours] = useState<TourCard[]>([])
+  const [visibleCards, setVisibleCards] = useState<boolean[]>([])
   const cardRefs = useRef<(HTMLDivElement | null)[]>([])
 
   const [currentSlide, setCurrentSlide] = useState(0)
@@ -127,7 +59,7 @@ export function ToursSection() {
     return () => {
       observers.forEach((observer) => observer?.disconnect())
     }
-  }, [])
+  }, [tours.length])
 
   useEffect(() => {
     const updateSlidesPerView = () => {
@@ -208,6 +140,25 @@ export function ToursSection() {
     }
   }
 
+  // Fetch tours from Sanity on mount
+  useEffect(() => {
+    sanityClient.fetch(toursListQuery).then((data: any[]) => {
+      const mapped: TourCard[] = (data || []).map((t) => ({
+        id: t.id,
+        title: t.name,
+        description: t.brief,
+        image: t.image || "/placeholder.jpg",
+        fallback: t.fallback,
+        duration: t.hours,
+        groupSize: t.people,
+        location: t.location,
+        price: typeof t.priceFromUSD === "number" ? `Desde US $${t.priceFromUSD}` : undefined,
+      }))
+      setTours(mapped)
+      setVisibleCards(new Array(mapped.length).fill(false))
+    })
+  }, [])
+
   return (
     <section id="tours" className="py-20 bg-white">
       <div className="container mx-auto px-4">
@@ -217,6 +168,12 @@ export function ToursSection() {
           onMouseLeave={() => setIsAutoPlaying(true)}
           ref={carouselRef}
         >
+          {tours.length === 0 && (
+            <div className="py-16 text-center">
+              <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-4">Nuestros Tours</h2>
+              <p className="text-xl text-gray-600">No hay tours disponibles por el momento.</p>
+            </div>
+          )}
           <div
             className="overflow-x-hidden"
             onTouchStart={onTouchStart}
@@ -258,7 +215,7 @@ export function ToursSection() {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
                       <div className="absolute top-4 right-0 bg-amber-600 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg transform translate-x-full group-hover:translate-x-0 transition-transform duration-300">
-                        {tour.price}
+                        {tour.price || ""}
                       </div>
                     </div>
 
@@ -289,19 +246,16 @@ export function ToursSection() {
                         <div className="text-lg font-bold text-amber-700 group-hover:scale-110 transition-transform duration-300">
                           {tour.price}
                         </div>
-                        <Link href={tour.id === "hacienda-cafetera-coloma" ? `/tours/${tour.id}` : "#"}>
+                        <Link href={`/tours/${tour.id}`}>
                           <Button
                             className="bg-amber-700 hover:bg-amber-800 text-white transition-all duration-300 hover:scale-110 hover:shadow-lg hover:-translate-y-1 active:scale-95 btn-enhanced"
-                            disabled={tour.id !== "hacienda-cafetera-coloma"}
                             onClick={() => {
-                              if (tour.id === "hacienda-cafetera-coloma") {
-                                setTimeout(() => {
-                                  window.scrollTo({
-                                    top: 0,
-                                    behavior: "smooth",
-                                  })
-                                }, 100)
-                              }
+                              setTimeout(() => {
+                                window.scrollTo({
+                                  top: 0,
+                                  behavior: "smooth",
+                                })
+                              }, 100)
                             }}
                           >
                             Ver detalle

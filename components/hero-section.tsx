@@ -24,7 +24,6 @@ export function HeroSection() {
 
   useEffect(() => {
     sanityClient.fetch(heroQuery).then((data) => {
-      console.log(data)
       setHero(data || null)
     })
   }, [])

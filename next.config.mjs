@@ -10,7 +10,10 @@ const nextConfig = {
     domains: [
       "nomadascolombiatravel.com",
       "cdn.sanity.io",
-      // otros dominios
+  // otros dominios
+  "images.unsplash.com",
+  "upload.wikimedia.org",
+  "corsproxy.io",
     ],
     unoptimized: true,
   },

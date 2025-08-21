@@ -59,9 +59,11 @@ export function ValidatedImage({
       img.crossOrigin = "anonymous"
 
       img.onload = () => {
-        // Check minimum dimensions (600x400px)
-        if (img.naturalWidth < 600 || img.naturalHeight < 400) {
-          console.warn(`image-replaced: ${imageSrc} - dimensions too small (${img.naturalWidth}x${img.naturalHeight})`)
+        // Check minimum dimensions (relaxed to 300x200px)
+        if (img.naturalWidth < 300 || img.naturalHeight < 200) {
+          console.warn(
+            `image-replaced: ${imageSrc} - dimensions too small (${img.naturalWidth}x${img.naturalHeight})`,
+          )
           resolve(false)
           return
         }
@@ -91,12 +93,15 @@ export function ValidatedImage({
           if (isFallbackValid) {
             setCurrentSrc(fallbackSrc)
             setIsValid(true)
+      return
           }
         }
 
-        if (onError) {
-          onError()
-        }
+    // As last resort, use local placeholder
+    const placeholder = "/placeholder.jpg"
+    setCurrentSrc(placeholder)
+    setIsValid(true)
+    onError?.()
       }
     }
 
@@ -117,10 +122,11 @@ export function ValidatedImage({
         }
       }
 
-      setIsValid(false)
-      if (onError) {
-        onError()
-      }
+      // Last resort: local placeholder
+      const placeholder = "/placeholder.jpg"
+      setCurrentSrc(placeholder)
+      setIsValid(true)
+      onError?.()
     }
   }
 

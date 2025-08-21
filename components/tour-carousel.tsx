@@ -4,7 +4,9 @@ import { useState, useEffect } from "react"
 import { ChevronLeft, ChevronRight, X } from "lucide-react"
 import { Lightbox } from "./ui/lightbox"
 
-const images = [
+type CarouselImage = { src: string; alt: string }
+
+const defaultImages: CarouselImage[] = [
   {
     src: "/placeholder.svg?height=400&width=600",
     alt: "Plantación de café colombiano",
@@ -39,7 +41,12 @@ const images = [
   },
 ]
 
-export function TourCarousel() {
+interface TourCarouselProps {
+  images?: CarouselImage[]
+}
+
+export function TourCarousel({ images }: TourCarouselProps) {
+  const imgs: CarouselImage[] = images && images.length > 0 ? images : defaultImages
   const [currentIndex, setCurrentIndex] = useState(0)
   const [selectedImage, setSelectedImage] = useState<number | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -47,16 +54,16 @@ export function TourCarousel() {
   // Auto-play carousel
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 4 >= images.length ? 0 : prevIndex + 4))
+      setCurrentIndex((prevIndex) => (prevIndex + 4 >= imgs.length ? 0 : prevIndex + 4))
     }, 4000)
 
     return () => clearInterval(interval)
-  }, [])
+  }, [imgs.length])
 
   const nextSlide = () => {
     setIsLoading(true)
     setTimeout(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 4 >= images.length ? 0 : prevIndex + 4))
+      setCurrentIndex((prevIndex) => (prevIndex + 4 >= imgs.length ? 0 : prevIndex + 4))
       setIsLoading(false)
     }, 150)
   }
@@ -64,7 +71,7 @@ export function TourCarousel() {
   const prevSlide = () => {
     setIsLoading(true)
     setTimeout(() => {
-      setCurrentIndex((prevIndex) => (prevIndex - 4 < 0 ? Math.max(0, images.length - 4) : prevIndex - 4))
+      setCurrentIndex((prevIndex) => (prevIndex - 4 < 0 ? Math.max(0, imgs.length - 4) : prevIndex - 4))
       setIsLoading(false)
     }, 150)
   }
@@ -85,9 +92,9 @@ export function TourCarousel() {
             <div className="overflow-hidden py-16 rounded-xl">
               <div
                 className={`flex transition-all duration-700 ease-out ${isLoading ? "opacity-75" : "opacity-100"}`}
-                style={{ transform: `translateX(-${currentIndex * 25}%)` }}
+    style={{ transform: `translateX(-${currentIndex * 25}%)` }}
               >
-                {images.map((image, index) => (
+    {imgs.map((image, index) => (
                   <div
                     key={index}
                     className="w-1/4 flex-shrink-0 px-2 cursor-pointer group"
@@ -95,7 +102,7 @@ export function TourCarousel() {
                   >
                     <div className="relative aspect-square overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-110 hover:-translate-y-2 transform">
                       <img
-                        src={image.src || "/placeholder.svg"}
+      src={image.src || "/placeholder.svg"}
                         alt={image.alt}
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-125"
                       />
@@ -136,7 +143,7 @@ export function TourCarousel() {
 
             {/* Dots indicator */}
             <div className="flex justify-center mt-8 space-x-3">
-              {Array.from({ length: Math.ceil(images.length / 4) }).map((_, index) => (
+              {Array.from({ length: Math.ceil(imgs.length / 4) }).map((_, index) => (
                 <button
                   key={index}
                   onClick={() => setCurrentIndex(index * 4)}
@@ -151,18 +158,14 @@ export function TourCarousel() {
           </div>
 
           {selectedImage !== null && (
-  <Lightbox
-    onClose={closeImage}
-    title={images[selectedImage].alt}
-    alignTop // descomenta si la quieres ver arriba en lugar de centrada
-  >
-    <img
-      src={images[selectedImage].src || "/placeholder.svg"}
-      alt={images[selectedImage].alt}
-      className="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl"
-    />
-  </Lightbox>
-)}
+            <Lightbox onClose={closeImage} title={imgs[selectedImage].alt} alignTop>
+              <img
+                src={imgs[selectedImage].src || "/placeholder.svg"}
+                alt={imgs[selectedImage].alt}
+                className="max-w-full max-h-[80vh] object-contain rounded-lg shadow-2xl"
+              />
+            </Lightbox>
+          )}
 
         </div>
       </div>
