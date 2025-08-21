@@ -12,7 +12,7 @@ import { generalQuery } from "@/lib/queries"
 
 type GeneralData = {
   logoUrl?: string | null
-  callNumber?: string | null
+  // callNumber eliminado; solo se usan números de WhatsApp
   whatsappNumbers?: string[]
 }
 

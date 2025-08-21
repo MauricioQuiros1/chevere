@@ -10,12 +10,6 @@ export default {
             description: "Dirección o ciudad principal (ej: Bogotá, Colombia)",
         },
         {
-            name: "callNumber",
-            title: "Número para llamadas",
-            type: "string",
-            description: "Número telefónico para llamadas (formato internacional opcional)",
-        },
-        {
             name: "whatsappNumbers",
             title: "Números de WhatsApp",
             type: "array",
@@ -70,3 +64,4 @@ export default {
         },
     ],
 }
+
