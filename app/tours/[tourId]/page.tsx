@@ -11,6 +11,7 @@ import { CustomTourContact } from "@/components/custom-tour-contact"
 import { TourIncludesRecommendations } from "@/components/tour-includes-recommendations"
 import { TourCarousel } from "@/components/tour-carousel"
 import { Clock, Users, MapPin, Star } from "lucide-react"
+import { PortableText } from "@portabletext/react"
 
 type Params = { tourId: string }
 
@@ -106,11 +107,15 @@ export default async function TourDetailPage({ params }: { params: Promise<Param
                   {tour.introTitle}
                 </h2>
               )}
-              {tour.introDescription && (
-                <p className="prose prose-lg max-w-none text-gray-700 leading-relaxed text-xl mb-8">
+              {Array.isArray(tour.introDescription) ? (
+                <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed text-lg text-justify mb-8">
+                  <PortableText value={tour.introDescription} />
+                </div>
+              ) : tour.introDescription ? (
+                <p className="prose prose-lg max-w-none text-gray-700 leading-relaxed text-lg text-justify mb-8">
                   {tour.introDescription}
                 </p>
-              )}
+              ) : null}
             </div>
           </div>
         )}

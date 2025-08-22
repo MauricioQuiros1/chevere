@@ -57,7 +57,7 @@ export function TrasladosSection() {
   }
 
   return (
-    <section id="traslados" className="py-16 bg-gradient-to-br from-amber-50 to-orange-50">
+    <section id="traslados" className="py-16 bg-gradient-to-br from-amber-50 to-orange-50 scroll-mt-24">
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-12">
@@ -116,7 +116,7 @@ export function TrasladosSection() {
                 <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
                   <div className="flex items-center text-gray-500">
                     <Clock className="w-4 h-4 mr-2" />
-                    {activeTab === "airport" ? service.duration : service.minHours}
+                    {"duration" in service ? service.duration : (service as any).minHours}
                   </div>
                   <div className="flex items-center text-gray-500">
                     <Users className="w-4 h-4 mr-2" />

@@ -7,44 +7,61 @@ export function SmoothScrollHandler() {
   const pathname = usePathname()
 
   useEffect(() => {
-    const scrollToTop = () => {
-      // Always use smooth scrolling as specified in requirements
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      })
+    const scrollOnRouteChange = () => {
+      const hash = window.location.hash
+      if (hash) {
+        const el = document.querySelector(hash)
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "start" })
+          return
+        }
+      }
+      // fallback: top
+      window.scrollTo({ top: 0, behavior: "smooth" })
     }
 
     // Small delay to ensure the page has loaded and DOM is ready
-    const timer = setTimeout(scrollToTop, 50)
+    const timer = setTimeout(scrollOnRouteChange, 50)
 
     return () => clearTimeout(timer)
   }, [pathname])
 
   useEffect(() => {
     const handleAnchorClick = (e: Event) => {
-      const target = e.target as HTMLAnchorElement
-      if (target.tagName === "A") {
-        const href = target.getAttribute("href")
+      const el = (e.target as HTMLElement)?.closest("a") as HTMLAnchorElement | null
+      if (!el) return
+      const href = el.getAttribute("href") || ""
 
-        // Handle hash links (same page anchors)
-        if (href?.startsWith("#")) {
+      // Same-page hash links like "#traslados"
+      if (href.startsWith("#")) {
+        e.preventDefault()
+        const element = document.querySelector(href)
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "start" })
+          // update hash without jump
+          history.pushState(null, "", href)
+        }
+        return
+      }
+
+      // Links to home section like "/#traslados"
+      if (href.startsWith("/#")) {
+        // If already on home, intercept and smooth-scroll without full navigation
+        if (window.location.pathname === "/") {
           e.preventDefault()
-          const element = document.querySelector(href)
+          const hash = href.slice(1) // "#traslados"
+          const element = document.querySelector(hash)
           if (element) {
-            element.scrollIntoView({
-              behavior: "smooth",
-              block: "start",
-            })
+            element.scrollIntoView({ behavior: "smooth", block: "start" })
+            history.pushState(null, "", href)
           }
         }
-
-        // Handle "Ver detalle" links and other internal navigation
-        if (href && href.startsWith("/")) {
-          // Let Next.js handle the navigation, smooth scroll will be handled by pathname effect
-          return
-        }
+        // else: allow navigation; after route change, the pathname effect will smooth-scroll
+        return
       }
+
+      // Other internal links: let Next.js handle navigation
+      if (href.startsWith("/")) return
     }
 
     document.addEventListener("click", handleAnchorClick)

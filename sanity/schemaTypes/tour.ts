@@ -57,8 +57,25 @@ export default {
     {
       name: "introDescription",
       title: "Descripción introducción",
-      type: "text",
-      rows: 6,
+      type: "array",
+      of: [
+        {
+          type: "block",
+          styles: [
+            { title: "Normal", value: "normal" },
+            { title: "Título 2", value: "h2" },
+            { title: "Título 3", value: "h3" },
+          ],
+          lists: [{ title: "Viñetas", value: "bullet" }],
+          marks: {
+            decorators: [
+              { title: "Negrita", value: "strong" },
+              { title: "Cursiva", value: "em" },
+            ],
+          },
+        },
+      ],
+      description: "Permite negritas y saltos de párrafo",
     },
     {
       name: "image",

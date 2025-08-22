@@ -72,3 +72,14 @@ export const tourDetailQuery = `
   pricingTiers[]{people, priceUSD, popular}
 }
 `
+
+export const translationsByLocale = `
+*[_type == "translations" && locale == $locale][0]{
+  locale,
+  header{homeLabel, aboutLabel, toursLabel, transfersLabel, contactLabel},
+  hero{title, whatsappText, toursButtonText},
+  toursSection{title, emptyMessage},
+  footer{rightsText},
+  common{reserveWhatsAppLabel, viewDetailsLabel, pricesTitle, bestPriceBadge}
+}
+`

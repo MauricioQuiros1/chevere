@@ -1,6 +1,5 @@
 "use client"
 
-import type React from "react"
 import { useState, useEffect, useRef } from "react"
 import Image from "next/image"
 import Link from "next/link"
@@ -8,7 +7,7 @@ import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Phone } from "lucide-react"
 import { sanityClient } from "@/lib/sanity"
-import { generalQuery } from "@/lib/queries"
+import { generalQuery, toursListQuery } from "@/lib/queries"
 
 type GeneralData = {
   logoUrl?: string | null
@@ -19,6 +18,7 @@ type GeneralData = {
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [general, setGeneral] = useState<GeneralData | null>(null)
+  const [tours, setTours] = useState<Array<{ id: string; name: string }>>([])
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [mobileToursOpen, setMobileToursOpen] = useState(false) // mobile submenu
   const [toursOpen, setToursOpen] = useState(false)
@@ -35,16 +35,21 @@ export function Header() {
     sanityClient.fetch(generalQuery).then((data) => setGeneral(data || null))
   }, [])
 
+  // Fetch tours for navigation
+  useEffect(() => {
+    sanityClient
+      .fetch(toursListQuery)
+      .then((data: any[]) => {
+        const list = (data || []).map((t) => ({ id: t.id, name: t.name }))
+        setTours(list)
+      })
+      .catch(() => setTours([]))
+  }, [])
+
   const handleWhatsAppClick = () => {
     const number = general?.whatsappNumbers?.[0] || "573184598635"
     const text = encodeURIComponent("Hola, me interesa información sobre sus servicios")
     window.open(`https://wa.me/${number}?text=${text}`, "_blank")
-  }
-
-  const handleTrasladosClick = (e: React.MouseEvent) => {
-    e.preventDefault()
-    const trasladosSection = document.getElementById("traslados")
-    if (trasladosSection) trasladosSection.scrollIntoView({ behavior: "smooth" })
   }
 
   const isActivePage = (href: string) => {
@@ -120,34 +125,33 @@ export function Header() {
                   ${toursOpen ? "opacity-100 visible" : "opacity-0 invisible"}`}
                 >
                   <div className="bg-white rounded-md overflow-hidden">
-                    <Link
-                      href="/tours/hacienda-cafetera-coloma"
-                      className="block px-4 py-2 text-sm text-gray-800 hover:bg-amber-50 hover:text-amber-800 first:rounded-t-md last:rounded-b-md"
-                    >
-                      Tour Hacienda Cafetera Coloma
-                    </Link>
-                    <Link
-                      href="/tours/otro-tour"
-                      className="block px-4 py-2 text-sm text-gray-800 hover:bg-amber-50 hover:text-amber-800 first:rounded-t-md last:rounded-b-md"
-                    >
-                      Otro Tour
-                    </Link>
-                    <Link
-                      href="/tours/un-tour-mas"
-                      className="block px-4 py-2 text-sm text-gray-800 hover:bg-amber-50 hover:text-amber-800 first:rounded-t-md last:rounded-b-md"
-                    >
-                      Un tour más
-                    </Link>
+                    {tours.length > 0 ? (
+                      tours.map((t, idx) => (
+                        <Link
+                          key={t.id}
+                          href={`/tours/${t.id}`}
+                          className={`block px-4 py-2 text-sm text-gray-800 hover:bg-amber-50 hover:text-amber-800 ${
+                            idx === 0 ? "first:rounded-t-md" : ""
+                          } ${idx === tours.length - 1 ? "last:rounded-b-md" : ""}`}
+                        >
+                          {t.name}
+                        </Link>
+                      ))
+                    ) : (
+                      <span className="block px-4 py-2 text-sm text-gray-400 first:rounded-t-md last:rounded-b-md select-none">
+                        No hay tour
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
 
-              <button
-                onClick={handleTrasladosClick}
+              <Link
+                href="/#traslados"
                 className="nav-link-enhanced text-gray-700 hover:text-amber-700 font-medium transition-all duration-300 hover:scale-105 relative z-10"
               >
                 Traslados
-              </button>
+              </Link>
 
               <Link
                 href="/contacto"
@@ -235,48 +239,33 @@ export function Header() {
                     }`}
                 >
                   <div className="ml-2 rounded-md ">
-                    <Link
-                      href="/tours/hacienda-cafetera-coloma"
-                      className="block px-4 py-2 text-sm text-gray-800 hover:bg-amber-50 hover:text-amber-800"
-                      onClick={() => {
-                        setIsMobileMenuOpen(false)
-                        setMobileToursOpen(false)
-                      }}
-                    >
-                      Tour Hacienda Cafetera Coloma
-                    </Link>
-                    <Link
-                      href="/tours/otro-tour"
-                      className="block px-4 py-2 text-sm text-gray-800 hover:bg-amber-50 hover:text-amber-800"
-                      onClick={() => {
-                        setIsMobileMenuOpen(false)
-                        setMobileToursOpen(false)
-                      }}
-                    >
-                      Otro Tour
-                    </Link>
-                    <Link
-                      href="/tours/un-tour-mas"
-                      className="block px-4 py-2 text-sm text-gray-800 hover:bg-amber-50 hover:text-amber-800"
-                      onClick={() => {
-                        setIsMobileMenuOpen(false)
-                        setMobileToursOpen(false)
-                      }}
-                    >
-                      Un tour más
-                    </Link>
+                    {tours.length > 0 ? (
+                      tours.map((t) => (
+                        <Link
+                          key={t.id}
+                          href={`/tours/${t.id}`}
+                          className="block px-4 py-2 text-sm text-gray-800 hover:bg-amber-50 hover:text-amber-800"
+                          onClick={() => {
+                            setIsMobileMenuOpen(false)
+                            setMobileToursOpen(false)
+                          }}
+                        >
+                          {t.name}
+                        </Link>
+                      ))
+                    ) : (
+                      <span className="block px-4 py-2 text-sm text-gray-400 select-none">No hay tour</span>
+                    )}
                   </div>
                 </div>
               </div>
-              <button
-                onClick={(e) => {
-                  handleTrasladosClick(e)
-                  setIsMobileMenuOpen(false)
-                }}
+              <Link
+                href="/#traslados"
                 className="mobile-menu-item block w-full text-left px-4 py-2 rounded-lg transition-all duration-300 hover:bg-amber-50 hover:text-amber-700 hover:translate-x-2 text-gray-700"
+                onClick={() => setIsMobileMenuOpen(false)}
               >
                 Traslados
-              </button>
+              </Link>
               <Link
                 href="/contacto"
                 className={`mobile-menu-item block px-4 py-2 rounded-lg transition-all duration-300 hover:bg-amber-50 hover:text-amber-700 hover:translate-x-2 ${isActivePage("/contacto")
