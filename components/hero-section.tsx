@@ -6,10 +6,12 @@ import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { ValidatedImage } from "./image-validator"
 import { sanityClient } from "@/lib/sanity"
-import { heroQuery } from "@/lib/queries"
+import { heroQuery, translationsByLocale } from "@/lib/queries"
+import { useLocale } from "@/components/locale-provider"
 
 
 export function HeroSection() {
+  const { locale } = useLocale()
   const [currentImage, setCurrentImage] = useState(0)
   type HeroImage = { src?: string | null; fallback?: string | null; alt?: string | null }
   type HeroData = {
@@ -20,13 +22,38 @@ export function HeroSection() {
     images?: HeroImage[]
   }
 
+  type TranslationsHero = {
+    title?: string | null
+    whatsappText?: string | null
+    toursButtonText?: string | null
+  }
+  type TranslationsDoc = {
+    locale?: string
+    hero?: TranslationsHero
+  }
+
   const [hero, setHero] = useState<HeroData | null>(null)
+  const [t, setT] = useState<TranslationsDoc | null>(null)
 
   useEffect(() => {
-    sanityClient.fetch(heroQuery).then((data) => {
-      setHero(data || null)
-    })
-  }, [])
+    let cancelled = false
+    const load = async () => {
+      const [heroData, transData] = await Promise.all([
+        sanityClient.fetch(heroQuery),
+        sanityClient.fetch(translationsByLocale, { locale }),
+      ])
+      if (!cancelled) setHero(heroData || null)
+      if (!cancelled) {
+        if (transData) setT(transData)
+        else if (locale !== 'es') {
+          const esData = await sanityClient.fetch(translationsByLocale, { locale: 'es' })
+          if (!cancelled) setT(esData || null)
+        } else setT(null)
+      }
+    }
+    load()
+    return () => { cancelled = true }
+  }, [locale])
 
   // Slider interval: only run when there are at least 2 images
   useEffect(() => {
@@ -125,13 +152,15 @@ export function HeroSection() {
           <Button
             onClick={() => {
               const number = hero?.whatsappNumber || "573054798365"
-              const text = encodeURIComponent(hero?.whatsappText || "Hola, quiero hacer una reserva")
+              const text = encodeURIComponent(
+                t?.hero?.whatsappText || hero?.whatsappText || (locale === 'en' ? 'Hello, I want to make a reservation' : 'Hola, quiero hacer una reserva')
+              )
               window.open(`https://wa.me/${number}?text=${text}`, "_blank")
             }}
             size="lg"
             className="bg-green-600 hover:bg-green-700 hover:scale-105 text-white px-8 py-4 text-lg font-semibold transition-all duration-300 transform hover:shadow-2xl animate-pulse hover:animate-none"
           >
-            {hero?.whatsappText || "Reservar por WhatsApp"}
+            {t?.hero?.whatsappText || hero?.whatsappText || (locale === 'en' ? 'Book via WhatsApp' : 'Reservar por WhatsApp')}
           </Button>
           <Button
             onClick={handleScrollToTours}
@@ -139,7 +168,7 @@ export function HeroSection() {
             variant="outline"
             className="border-white text-white hover:bg-white hover:text-gray-900 hover:scale-105 px-8 py-4 text-lg font-semibold bg-transparent transition-all duration-300 transform hover:shadow-2xl hover:shadow-white/50"
           >
-            {hero?.toursButtonText || "Tours Bogotá y alrededores"}
+            {t?.hero?.toursButtonText || hero?.toursButtonText || (locale === 'en' ? 'Tours Bogotá & surroundings' : 'Tours Bogotá y alrededores')}
           </Button>
         </div>
       </div>

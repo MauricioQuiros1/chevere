@@ -28,6 +28,7 @@ export default {
         { name: "toursLabel", title: "Tours", type: "string" },
         { name: "transfersLabel", title: "Traslados", type: "string" },
         { name: "contactLabel", title: "Contacto", type: "string" },
+  { name: "whatsappCtaText", title: "Texto botón WhatsApp (Header)", type: "string" },
       ],
     },
     {
@@ -36,8 +37,8 @@ export default {
       type: "object",
       fields: [
         { name: "title", title: "Título", type: "string" },
-        { name: "whatsappText", title: "Texto botón WhatsApp", type: "string" },
-        { name: "toursButtonText", title: "Texto botón Tours", type: "string" },
+  { name: "whatsappText", title: "Texto botón WhatsApp (Reservar)", type: "string" },
+  { name: "toursButtonText", title: "Texto botón Tours (secundario)", type: "string" },
       ],
     },
     {

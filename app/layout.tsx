@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Inter, Playfair_Display } from "next/font/google"
 import { SmoothScrollHandler } from "@/components/smooth-scroll-handler"
+import { LocaleProvider } from "@/components/locale-provider"
 import { WhatsAppFloat } from "@/components/whatsapp-float"
 import { PageTransition } from "@/components/page-transition"
 import "./globals.css"
@@ -142,9 +143,11 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <SmoothScrollHandler />
-        <PageTransition>{children}</PageTransition>
-        <WhatsAppFloat />
+        <LocaleProvider>
+          <SmoothScrollHandler />
+          <PageTransition>{children}</PageTransition>
+          <WhatsAppFloat />
+        </LocaleProvider>
       </body>
     </html>
   )

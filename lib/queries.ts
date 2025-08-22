@@ -76,7 +76,7 @@ export const tourDetailQuery = `
 export const translationsByLocale = `
 *[_type == "translations" && locale == $locale][0]{
   locale,
-  header{homeLabel, aboutLabel, toursLabel, transfersLabel, contactLabel},
+  header{homeLabel, aboutLabel, toursLabel, transfersLabel, contactLabel, whatsappCtaText},
   hero{title, whatsappText, toursButtonText},
   toursSection{title, emptyMessage},
   footer{rightsText},
