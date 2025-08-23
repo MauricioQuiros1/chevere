@@ -9,7 +9,8 @@
   "start": "next start",
   "setup:translations": "npx ts-node scripts/setup-translations.ts",
   "seed:transfers": "node scripts/seed-transfers.cjs",
-  "seed:testimonials": "node scripts/seed-testimonials.cjs"
+  "seed:testimonials": "node scripts/seed-testimonials.cjs",
+  "seed:contact": "node scripts/seed-contact.cjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

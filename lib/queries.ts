@@ -22,6 +22,7 @@ export const heroQuery = `
 
 export const generalQuery = `
 *[_type == "general"][0]{
+  companyBrief,
   location,
   callNumber,
   whatsappNumbers,
@@ -116,5 +117,26 @@ export const testimonialsSectionQuery = `
     "image": coalesce(image.asset->url, imageUrl),
     "fallback": coalesce(fallbackImage.asset->url, fallbackUrl)
   }
+}
+`
+
+export const contactPageQuery = `
+*[_type == "contactPage"][0]{
+  pageTitle,
+  pageDescription,
+  form{
+    title,
+    submitLabel,
+    fields[]{name, label, type, placeholder, required}
+  },
+  directContact{title, description, buttonLabel}
+}
+`
+
+export const toursSimpleListQuery = `
+*[_type == "tour"]{
+  "id": slug.current,
+  name,
+  people
 }
 `

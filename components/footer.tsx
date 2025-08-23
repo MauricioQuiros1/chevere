@@ -20,6 +20,7 @@ import { generalQuery } from "@/lib/queries"
 
 type GeneralData = {
   logoUrl?: string | null
+  companyBrief?: string | null
   location?: string | null
   email?: string | null
   openingHours?: { days?: string | null; hours?: string | null }[]
@@ -99,8 +100,12 @@ export function Footer() {
             </Link>
 
             <p className="text-gray-300 text-sm leading-relaxed">
-              Descubre la magia de Bogotá con nuestros tours personalizados.
-              Experiencias auténticas, seguridad garantizada y momentos inolvidables.
+              {general?.companyBrief || (
+                <>
+                  Descubre la magia de Bogotá con nuestros tours personalizados.
+                  Experiencias auténticas, seguridad garantizada y momentos inolvidables.
+                </>
+              )}
             </p>
 
             <div className="flex space-x-4">

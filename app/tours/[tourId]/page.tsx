@@ -154,7 +154,12 @@ export default async function TourDetailPage({ params }: { params: Promise<Param
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
               {tour.pricingTiers.map((tier: any, idx: number) => (
-                <div key={idx} className={`relative bg-white rounded-xl shadow p-6 text-center border ${tier.popular ? "ring-2 ring-amber-400 scale-105" : ""}`}>
+                <div
+                  key={idx}
+                  className={`relative bg-white rounded-xl shadow p-6 text-center border transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl hover:border-amber-200 ${
+                    tier.popular ? "ring-2 ring-amber-400 scale-105" : ""
+                  }`}
+                >
                   {tier.popular && (
                     <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-500 text-white text-xs px-3 py-1 rounded-full">
                       Mejor Precio

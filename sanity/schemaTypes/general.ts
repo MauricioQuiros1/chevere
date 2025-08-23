@@ -4,6 +4,13 @@ export default {
     type: "document",
     fields: [
         {
+            name: "companyBrief",
+            title: "Descripción breve de la empresa",
+            type: "text",
+            rows: 3,
+            description: "Texto corto que aparece en el footer bajo el logo",
+        },
+        {
             name: "location",
             title: "Ubicación",
             type: "string",

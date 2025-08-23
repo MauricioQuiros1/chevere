@@ -10,6 +10,16 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { MessageCircle, Send, Clock } from "lucide-react"
+import { sanityClient } from "@/lib/sanity"
+import { contactPageQuery, toursSimpleListQuery, generalQuery } from "@/lib/queries"
+
+type ContactField = {
+  name: string
+  label: string
+  type: "text" | "phone" | "email" | "tour" | "date" | "people" | "message"
+  placeholder?: string
+  required?: boolean
+}
 
 export function ContactForm() {
   const [formData, setFormData] = useState({
@@ -26,6 +36,9 @@ export function ContactForm() {
   const [formVisible, setFormVisible] = useState(false)
   const [cardsVisible, setCardsVisible] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [config, setConfig] = useState<any>(null)
+  const [tours, setTours] = useState<{ id: string; name: string; people?: number | string | null }[]>([])
+  const [general, setGeneral] = useState<any>(null)
   const headerRef = useRef<HTMLDivElement>(null)
   const formRef = useRef<HTMLDivElement>(null)
   const cardsRef = useRef<HTMLDivElement>(null)
@@ -77,15 +90,52 @@ export function ContactForm() {
     }
   }, [])
 
+  useEffect(() => {
+    let cancelled = false
+    const load = async () => {
+      const [page, toursData, gen] = await Promise.all([
+        sanityClient.fetch(contactPageQuery),
+        sanityClient.fetch(toursSimpleListQuery),
+        sanityClient.fetch(generalQuery),
+      ])
+      if (!cancelled) setConfig(page || null)
+      if (!cancelled) setTours(Array.isArray(toursData) ? toursData : [])
+      if (!cancelled) setGeneral(gen || null)
+    }
+    load()
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
   const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
+    setFormData((prev) => {
+      // Si cambia el servicio, asegurar que personas no exceda el máximo
+      if (field === "servicio") {
+        const selected = tours.find((t) => t.id === value)
+        const max = getMaxPeople(selected?.people)
+        const personas = Number(prev.personas)
+        const clamped = personas && personas > max ? String(max) : prev.personas
+        return { ...prev, servicio: value, personas: clamped }
+      }
+      return { ...prev, [field]: value }
+    })
+  }
+
+  const getMaxPeople = (people: number | string | null | undefined): number => {
+    if (typeof people === "number" && Number.isFinite(people) && people > 0) return people
+    if (typeof people === "string") {
+      const nums = people.match(/\d+/g)?.map((n) => Number(n)).filter((n) => Number.isFinite(n) && n > 0) || []
+      if (nums.length) return Math.max(...nums)
+    }
+    return 5
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
 
-    const message = `Hola, me interesa contactarlos:
+  const message = `Hola, me interesa contactarlos:
     
 Nombre: ${formData.nombre}
 WhatsApp: ${formData.whatsapp}
@@ -96,14 +146,16 @@ Número de personas: ${formData.personas}
 Mensaje: ${formData.mensaje}`
 
     // Simulate loading delay for better UX
+    const raw = general?.whatsappNumbers?.[0] || "573184598635"
     setTimeout(() => {
-      window.open(`https://wa.me/573054798365?text=${encodeURIComponent(message)}`, "_blank")
+      window.open(`https://wa.me/${raw}?text=${encodeURIComponent(message)}`, "_blank")
       setIsSubmitting(false)
     }, 1000)
   }
 
   const handleWhatsApp = () => {
-    window.open("https://wa.me/573054798365?text=Hola, me interesa información sobre sus tours", "_blank")
+    const raw = general?.whatsappNumbers?.[0] || "573184598635"
+    window.open(`https://wa.me/${raw}?text=${encodeURIComponent("Hola, me interesa información sobre sus tours")}`, "_blank")
   }
 
   return (
@@ -118,14 +170,13 @@ Mensaje: ${formData.mensaje}`
             }`}
           >
             <h1 className="text-4xl md:text-6xl font-serif font-bold text-gray-900 mb-6 animate-fade-in-up">
-              Contacto
+              {config?.pageTitle || "Contacto"}
             </h1>
             <p
               className="text-xl text-gray-600 max-w-3xl mx-auto animate-fade-in-up"
               style={{ animationDelay: "0.2s" }}
             >
-              ¿Listo para vivir una experiencia única en Bogotá? Contáctanos y planifiquemos juntos tu próxima
-              aventura.
+              {config?.pageDescription || "¿Listo para vivir una experiencia única en Bogotá? Contáctanos y planifiquemos juntos tu próxima aventura."}
             </p>
           </div>
 
@@ -141,53 +192,59 @@ Mensaje: ${formData.mensaje}`
                 <CardHeader>
                   <CardTitle className="text-2xl font-serif text-gray-900 flex items-center">
                     <Send className="h-6 w-6 mr-2 text-amber-600 animate-pulse" />
-                    Envíanos un Mensaje
+                    {config?.form?.title || "Envíanos un Mensaje"}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="group">
-                        <Label htmlFor="nombre" className="group-hover:text-amber-700 transition-colors duration-300">
-                          Nombre Completo *
-                        </Label>
-                        <Input
-                          id="nombre"
-                          type="text"
-                          value={formData.nombre}
-                          onChange={(e) => handleInputChange("nombre", e.target.value)}
-                          required
-                          className="mt-1 transition-all duration-300 focus:scale-105 focus:shadow-lg border-2 focus:border-amber-400"
-                        />
-                      </div>
-                      <div className="group">
-                        <Label htmlFor="whatsapp" className="group-hover:text-amber-700 transition-colors duration-300">
-                          WhatsApp *
-                        </Label>
-                        <Input
-                          id="whatsapp"
-                          type="tel"
-                          value={formData.whatsapp}
-                          onChange={(e) => handleInputChange("whatsapp", e.target.value)}
-                          placeholder="+57 300 123 4567"
-                          required
-                          className="mt-1 transition-all duration-300 focus:scale-105 focus:shadow-lg border-2 focus:border-amber-400"
-                        />
-                      </div>
+                      {(
+                        (config?.form?.fields as ContactField[] | undefined) || [
+                          { name: "nombre", label: "Nombre Completo *", type: "text", required: true },
+                          { name: "whatsapp", label: "WhatsApp *", type: "phone", required: true, placeholder: "+57 300 123 4567" },
+                        ]
+                      )
+                        .filter((f) => ["text", "phone", "email"].includes(f.type))
+                        .slice(0, 2)
+                        .map((field) => (
+                          <div key={field.name} className="group">
+                            <Label htmlFor={field.name} className="group-hover:text-amber-700 transition-colors duration-300">
+                              {field.label}
+                            </Label>
+                            <Input
+                              id={field.name}
+                              type={field.type === "phone" ? "tel" : field.type === "email" ? "email" : "text"}
+                              value={(formData as any)[field.name] || ""}
+                              onChange={(e) => handleInputChange(field.name, e.target.value)}
+                              placeholder={field.placeholder}
+                              required={!!field.required}
+                              className="mt-1 transition-all duration-300 focus:scale-105 focus:shadow-lg border-2 focus:border-amber-400"
+                            />
+                          </div>
+                        ))}
                     </div>
 
-                    <div className="group">
-                      <Label htmlFor="email" className="group-hover:text-amber-700 transition-colors duration-300">
-                        Email
-                      </Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={(e) => handleInputChange("email", e.target.value)}
-                        className="mt-1 transition-all duration-300 focus:scale-105 focus:shadow-lg border-2 focus:border-amber-400"
-                      />
-                    </div>
+                    {(() => {
+                      const field: ContactField | undefined = (config?.form?.fields as ContactField[] | undefined)?.find(
+                        (f) => f.type === "email",
+                      ) || { name: "email", label: "Email", type: "email" }
+                      return (
+                        <div className="group">
+                          <Label htmlFor={field.name} className="group-hover:text-amber-700 transition-colors duration-300">
+                            {field.label}
+                          </Label>
+                          <Input
+                            id={field.name}
+                            type="email"
+                            value={(formData as any)[field.name] || ""}
+                            onChange={(e) => handleInputChange(field.name, e.target.value)}
+                            placeholder={field.placeholder}
+                            required={!!field.required}
+                            className="mt-1 transition-all duration-300 focus:scale-105 focus:shadow-lg border-2 focus:border-amber-400"
+                          />
+                        </div>
+                      )
+                    })()}
 
                     <div className="group">
                       <Label htmlFor="servicio" className="group-hover:text-amber-700 transition-colors duration-300">
@@ -198,15 +255,29 @@ Mensaje: ${formData.mensaje}`
                           <SelectValue placeholder="Selecciona un servicio" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="hacienda-cafetera">Tour Hacienda Cafetera Coloma</SelectItem>
-                          <SelectItem value="zipaquira">Catedral de Sal de Zipaquirá</SelectItem>
-                          <SelectItem value="guatavita">Laguna de Guatavita</SelectItem>
-                          <SelectItem value="monserrate">Cerro de Monserrate</SelectItem>
-                          <SelectItem value="museo-oro">Museo del Oro & Centro Histórico</SelectItem>
-                          <SelectItem value="villa-leyva">Villa de Leyva Día Completo</SelectItem>
-                          <SelectItem value="traslado-aeropuerto">Traslado al Aeropuerto</SelectItem>
-                          <SelectItem value="servicio-horas">Servicio por Horas</SelectItem>
-                          <SelectItem value="personalizado">Tour Personalizado</SelectItem>
+                          {tours.length
+                            ? tours.map((t) => (
+                                <SelectItem key={t.id} value={t.id}>
+                                  {t.name}
+                                </SelectItem>
+                              ))
+                            : (
+                                [
+                                  { id: "hacienda-cafetera", name: "Tour Hacienda Cafetera Coloma" },
+                                  { id: "zipaquira", name: "Catedral de Sal de Zipaquirá" },
+                                  { id: "guatavita", name: "Laguna de Guatavita" },
+                                  { id: "monserrate", name: "Cerro de Monserrate" },
+                                  { id: "museo-oro", name: "Museo del Oro & Centro Histórico" },
+                                  { id: "villa-leyva", name: "Villa de Leyva Día Completo" },
+                                  { id: "traslado-aeropuerto", name: "Traslado al Aeropuerto" },
+                                  { id: "servicio-horas", name: "Servicio por Horas" },
+                                  { id: "personalizado", name: "Tour Personalizado" },
+                                ].map((t) => (
+                                  <SelectItem key={t.id} value={t.id}>
+                                    {t.name}
+                                  </SelectItem>
+                                ))
+                              )}
                         </SelectContent>
                       </Select>
                     </div>
@@ -228,16 +299,20 @@ Mensaje: ${formData.mensaje}`
                         <Label htmlFor="personas" className="group-hover:text-amber-700 transition-colors duration-300">
                           Número de Personas
                         </Label>
-                        <Select onValueChange={(value) => handleInputChange("personas", value)}>
+                        <Select value={formData.personas || undefined} onValueChange={(value) => handleInputChange("personas", value)}>
                           <SelectTrigger className="mt-1 transition-all duration-300 hover:scale-105 hover:shadow-lg border-2 hover:border-amber-400">
                             <SelectValue placeholder="Selecciona" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="1">1 persona</SelectItem>
-                            <SelectItem value="2">2 personas</SelectItem>
-                            <SelectItem value="3">3 personas</SelectItem>
-                            <SelectItem value="4">4 personas</SelectItem>
-                            <SelectItem value="5+">5 o más personas</SelectItem>
+                            {(() => {
+                              const selected = tours.find((t) => t.id === formData.servicio)
+                              const max = getMaxPeople(selected?.people)
+                              return Array.from({ length: max }, (_, i) => i + 1).map((n) => (
+                                <SelectItem key={n} value={String(n)}>
+                                  {n} {n === 1 ? "persona" : "personas"}
+                                </SelectItem>
+                              ))
+                            })()}
                           </SelectContent>
                         </Select>
                       </div>
@@ -273,7 +348,7 @@ Mensaje: ${formData.mensaje}`
                       ) : (
                         <>
                           <Send className="h-5 w-5 mr-2 transition-transform duration-300 group-hover:translate-x-1" />
-                          Enviar Mensaje
+                          {config?.form?.submitLabel || "Enviar Mensaje"}
                         </>
                       )}
                     </Button>
@@ -293,22 +368,31 @@ Mensaje: ${formData.mensaje}`
                 <CardHeader>
                   <CardTitle className="text-2xl font-serif text-gray-900 flex items-center">
                     <MessageCircle className="h-6 w-6 mr-2 text-green-600 animate-bounce" />
-                    Contacto Directo
+                    {config?.directContact?.title || "Contacto Directo"}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-gray-600 mb-6 hover:text-gray-700 transition-colors duration-300">
-                     Contáctanos por WhatsApp para atención inmediata y personalizada.
+                     {config?.directContact?.description || "Contáctanos por WhatsApp para atención inmediata y personalizada."}
                   </p>
                   <div className="space-y-3">
                     <h4 className="font-semibold text-gray-900 hover:text-amber-700 transition-colors duration-300">
                       Horario de Atención:
                     </h4>
                     <div className="text-gray-600 hover:text-gray-700 transition-colors duration-300">
-                      <p className="flex items-center">
-                        <span className="inline-block w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
-                        Lunes a Sábado: 9:00 AM - 6:00 PM
-                      </p>
+                      {general?.openingHours?.length ? (
+                        general.openingHours.map((o: any, i: number) => (
+                          <p key={i} className="flex items-center">
+                            <span className="inline-block w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
+                            {`${o?.days || ""}${o?.hours ? `: ${o.hours}` : ""}`}
+                          </p>
+                        ))
+                      ) : (
+                        <p className="flex items-center">
+                          <span className="inline-block w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
+                          Lunes a Sábado: 9:00 AM - 6:00 PM
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -318,7 +402,7 @@ Mensaje: ${formData.mensaje}`
                     size="lg"
                   >
                     <MessageCircle className="h-5 w-5 mr-2 transition-transform duration-300 group-hover:rotate-12" />
-                    WhatsApp: +57 305 479 8365
+                    {config?.directContact?.buttonLabel || "WhatsApp"}
                   </Button>
                 </CardContent>
               </Card>
