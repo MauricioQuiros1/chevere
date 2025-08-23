@@ -83,3 +83,12 @@ export const translationsByLocale = `
   common{reserveWhatsAppLabel, viewDetailsLabel, pricesTitle, bestPriceBadge}
 }
 `
+
+export const customTourFormQuery = `
+*[_type == "customTourForm"][0]{
+  title,
+  subtitle,
+  submitLabel,
+  fields[]{name, label, type, placeholder, required}
+}
+`

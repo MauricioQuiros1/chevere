@@ -3,6 +3,7 @@ import hero from './hero'
 import general from './general'
 import tour from './tour'
 import translations from './translations'
+import customTourForm from './customTourForm'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -10,5 +11,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     general,
   tour,
   translations,
+  customTourForm,
   ],
 }
