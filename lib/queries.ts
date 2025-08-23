@@ -107,3 +107,14 @@ export const transfersSectionQuery = `
   }
 }
 `
+
+export const testimonialsSectionQuery = `
+*[_type == "testimonialsSection"][0]{
+  title,
+  testimonials[]{
+    name, location, rating, text,
+    "image": coalesce(image.asset->url, imageUrl),
+    "fallback": coalesce(fallbackImage.asset->url, fallbackUrl)
+  }
+}
+`
