@@ -90,16 +90,16 @@ export function Footer() {
             <Link href="/" className="flex items-center space-x-2">
               <Image
                 src={general?.logoUrl || "/logo.png"}
-                alt="Chevere Bogotá Tours"
+                alt="Chevere Bogotá Travel"
                 width={40}
                 height={40}
                 className="h-10 w-auto"
               />
-              <span className="text-xl font-serif font-bold">Chevere Bogotá Tours</span>
+              <span className="text-xl font-serif font-bold">Chevere Bogotá Travel</span>
             </Link>
 
             <p className="text-gray-300 text-sm leading-relaxed">
-              Descubre la magia de Colombia con nuestros tours personalizados.
+              Descubre la magia de Bogotá con nuestros tours personalizados.
               Experiencias auténticas, seguridad garantizada y momentos inolvidables.
             </p>
 
@@ -188,10 +188,11 @@ export function Footer() {
                 <li className="flex items-start space-x-3">
                   <Clock className="h-4 w-4 text-amber-400 mt-0.5 flex-shrink-0" />
                   <div className="text-gray-300 text-sm">
+                    <div className="text-white font-semibold mb-1">Horario de atención</div>
                     {general?.openingHours && general.openingHours.length > 0 ? (
                       general.openingHours.map((o, i) => (
                         <div key={i}>
-                          {`${o?.days || ""} ${o?.hours ? `- ${o.hours}` : ""}`}
+                          {`${o?.days || ""}${o?.hours ? ` - ${o.hours}` : ""}`}
                         </div>
                       ))
                     ) : (

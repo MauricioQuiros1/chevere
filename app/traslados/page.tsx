@@ -5,12 +5,12 @@ import { TrasladosServices } from "@/components/traslados-services"
 import { Footer } from "@/components/footer"
 
 export const metadata: Metadata = {
-  title: "Traslados - Chevere Bogotá Tours | Transporte Seguro y Confiable",
+  title: "Traslados - Chevere Bogotá Travel | Transporte Seguro y Confiable",
   description:
     "Servicios de traslados en Bogotá y Colombia. Aeropuerto El Dorado, hoteles, eventos empresariales. Transporte seguro, puntual y cómodo las 24 horas.",
   keywords: "traslados Bogotá, aeropuerto El Dorado, transporte empresarial, traslados hoteles, servicio 24 horas",
   openGraph: {
-    title: "Traslados - Chevere Bogotá Tours",
+    title: "Traslados - Chevere Bogotá Travel",
     description: "Servicios de traslados seguros y puntuales en Bogotá. Aeropuerto, hoteles y eventos empresariales.",
     type: "website",
   },

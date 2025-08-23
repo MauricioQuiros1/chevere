@@ -34,14 +34,14 @@ export function TourIncludesRecommendations({ includes, recommendations }: TourI
                     : "text-gray-600 hover:text-gray-900"
                 }`}
               >
-                Recomendaciones para tu visita
+                Características y Recomendaciones
               </button>
             </div>
           </div>
 
-          <div className="relative min-h-[300px]">
+          <div className="relative">
             <div
-              className={`absolute inset-0 transition-all duration-500 transform ${
+              className={`transition-all duration-500 transform ${
                 activeTab === "includes" ? "opacity-100 translate-x-0" : "opacity-0 translate-x-4"
               }`}
             >
@@ -54,7 +54,7 @@ export function TourIncludesRecommendations({ includes, recommendations }: TourI
                         className="flex items-start gap-4 transform transition-all duration-300 hover:translate-x-2"
                         style={{ animationDelay: `${index * 100}ms` }}
                       >
-                        <div className="w-3 h-3 bg-green-600 rounded-full mt-2 flex-shrink-0 animate-pulse" />
+                        <div className="w-3 h-3 bg-green-600 mt-2 flex-shrink-0 animate-pulse rotate-45" />
                         <span className="text-gray-800 leading-relaxed text-lg">{item}</span>
                       </li>
                     ))}
@@ -64,7 +64,7 @@ export function TourIncludesRecommendations({ includes, recommendations }: TourI
             </div>
 
             <div
-              className={`absolute inset-0 transition-all duration-500 transform ${
+              className={`transition-all duration-500 transform ${
                 activeTab === "recommendations" ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-4"
               }`}
             >
@@ -77,7 +77,7 @@ export function TourIncludesRecommendations({ includes, recommendations }: TourI
                         className="flex items-start gap-4 transform transition-all duration-300 hover:translate-x-2"
                         style={{ animationDelay: `${index * 100}ms` }}
                       >
-                        <div className="w-3 h-3 bg-blue-600 rounded-full mt-2 flex-shrink-0 animate-pulse" />
+                        <div className="w-3 h-3 bg-blue-600 mt-2 flex-shrink-0 animate-pulse rotate-45" />
                         <span className="text-gray-800 leading-relaxed text-lg">{item}</span>
                       </li>
                     ))}

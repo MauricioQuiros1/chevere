@@ -124,7 +124,7 @@ Mensaje: ${formData.mensaje}`
               className="text-xl text-gray-600 max-w-3xl mx-auto animate-fade-in-up"
               style={{ animationDelay: "0.2s" }}
             >
-              ¿Listo para vivir una experiencia única en Colombia? Contáctanos y planifiquemos juntos tu próxima
+              ¿Listo para vivir una experiencia única en Bogotá? Contáctanos y planifiquemos juntos tu próxima
               aventura.
             </p>
           </div>
@@ -298,8 +298,19 @@ Mensaje: ${formData.mensaje}`
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-gray-600 mb-6 hover:text-gray-700 transition-colors duration-300">
-                    ¿Prefieres hablar directamente? Contáctanos por WhatsApp para atención inmediata y personalizada.
+                     Contáctanos por WhatsApp para atención inmediata y personalizada.
                   </p>
+                  <div className="space-y-3">
+                    <h4 className="font-semibold text-gray-900 hover:text-amber-700 transition-colors duration-300">
+                      Horario de Atención:
+                    </h4>
+                    <div className="text-gray-600 hover:text-gray-700 transition-colors duration-300">
+                      <p className="flex items-center">
+                        <span className="inline-block w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
+                        Lunes a Sábado: 9:00 AM - 6:00 PM
+                      </p>
+                    </div>
+                  </div>
 
                   <Button
                     onClick={handleWhatsApp}
@@ -312,31 +323,6 @@ Mensaje: ${formData.mensaje}`
                 </CardContent>
               </Card>
 
-              {/* Business Hours Card */}
-              <Card
-                className="py-6 shadow-xl hover:shadow-2xl transition-all duration-500 border-2 hover:border-amber-200 transform hover:-translate-y-1 animate-fade-in-up"
-                style={{ animationDelay: "0.2s" }}
-              >
-                <CardHeader>
-                  <CardTitle className="text-2xl font-serif text-gray-900 flex items-center">
-                    <Clock className="h-6 w-6 mr-2 text-amber-600 animate-pulse" />
-                    Información Adicional
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    <h4 className="font-semibold text-gray-900 hover:text-amber-700 transition-colors duration-300">
-                      Horario de Atención:
-                    </h4>
-                    <div className="text-gray-600 hover:text-gray-700 transition-colors duration-300">
-                      <p className="flex items-center">
-                        <span className="inline-block w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
-                        Lunes a Sábado: 9:00 AM - 6:00 PM
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
             </div>
           </div>
         </div>

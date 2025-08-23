@@ -105,7 +105,7 @@ export function Header() {
             >
               <Image
                 src={general?.logoUrl || "/logo.png"}
-                alt="Chevere Bogotá Tours"
+                alt="Chevere Bogotá Travel"
                 width={48}
                 height={48}
                 className="h-12 w-auto transition-all duration-300 group-hover:drop-shadow-lg"

@@ -96,7 +96,7 @@ export function AboutTeam() {
                 <ValidatedImage
                   src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300&h=300&fit=crop&crop=face"
                   fallbackSrc="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&crop=face"
-                  alt="Mauricio Quiros - Fundador de Chevere Bogotá Tours"
+                  alt="Mauricio Quiros - Fundador de Chevere Bogotá Travel"
                   width={300}
                   height={300}
                   className="rounded-full mx-auto mb-6 shadow-lg"
@@ -104,7 +104,7 @@ export function AboutTeam() {
                 <h4 className="text-xl font-bold text-gray-900 mb-2">Mauricio Quiros</h4>
                 <p className="text-amber-600 font-medium mb-4">Fundador y Director</p>
                 <p className="text-gray-600 leading-relaxed">
-                  Con más de 10 años de experiencia en turismo, Mauricio fundó Chevere Bogotá Tours con la misión de
+                  Con más de 10 años de experiencia en turismo, Mauricio fundó Chevere Bogotá Travel con la misión de
                   mostrar la verdadera esencia de Colombia. Su pasión por la hospitalidad y conocimiento profundo del
                   país garantizan experiencias auténticas e inolvidables.
                 </p>

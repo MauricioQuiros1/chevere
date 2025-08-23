@@ -23,7 +23,7 @@ const testimonials = [
     image: "https://corsproxy.io/?https://nomadascolombiatravel.com/wp-content/uploads/2022/10/IMG-20231026-WA0151-600x600.jpg",
     fallback: "https://corsproxy.io/?https://nomadascolombiatravel.com/wp-content/uploads/2022/10/IMG-20231026-WA0102-600x600.jpg",
     rating: 5,
-    text: "Puntualidad impecable y vehículos en excelente estado. El tour a Villa de Leyva fue increíble. Definitivamente recomiendo Chevere Bogotá Tours.",
+    text: "Puntualidad impecable y vehículos en excelente estado. El tour a Villa de Leyva fue increíble. Definitivamente recomiendo Chevere Bogotá Travel.",
   },
   {
     name: "Ana Martínez",
@@ -152,7 +152,7 @@ export function TestimonialsSection() {
   }
 
   return (
-    <section className="py-20 bg-gradient-to-b from-amber-50 to-white">
+    <section className="py-20 pt-0 bg-gradient-to-b from-amber-50 to-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-6">

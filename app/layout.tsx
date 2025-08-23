@@ -20,25 +20,25 @@ const playfair = Playfair_Display({
 })
 
 export const metadata: Metadata = {
-  title: "Chevere Bogotá Tours - Transporte Turístico, Empresarial y Personalizado",
+  title: "Chevere Bogotá Travel - Transporte Turístico, Empresarial y Personalizado",
   description:
     "Servicios de transporte turístico, empresarial y personalizado en Bogotá y Colombia. Puntualidad, seguridad, amabilidad y experiencia en cada viaje.",
   keywords: "tours Bogotá, transporte turístico, traslados aeropuerto, tours Colombia, hacienda cafetera",
-  authors: [{ name: "Chevere Bogotá Tours" }],
-  creator: "Chevere Bogotá Tours",
-  publisher: "Chevere Bogotá Tours",
+  authors: [{ name: "Chevere Bogotá Travel" }],
+  creator: "Chevere Bogotá Travel",
+  publisher: "Chevere Bogotá Travel",
   openGraph: {
-    title: "Chevere Bogotá Tours - Transporte Turístico en Colombia",
+    title: "Chevere Bogotá Travel - Transporte Turístico en Colombia",
     description:
       "Descubre Colombia con nuestros tours personalizados. Transporte seguro y confiable en Bogotá y destinos nacionales.",
     url: "https://cheverebogotours.com",
-    siteName: "Chevere Bogotá Tours",
+    siteName: "Chevere Bogotá Travel",
     locale: "es_CO",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Chevere Bogotá Tours - Transporte Turístico en Colombia",
+    title: "Chevere Bogotá Travel - Transporte Turístico en Colombia",
     description: "Descubre Colombia con nuestros tours personalizados. Transporte seguro y confiable.",
   },
   robots: {
@@ -81,7 +81,7 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "LocalBusiness",
-              name: "Chevere Bogotá Tours",
+              name: "Chevere Bogotá Travel",
               description: "Servicios de transporte turístico, empresarial y personalizado en Bogotá y Colombia",
               url: "https://cheverebogotours.com",
               telephone: ["+57-318-459-8635", "+57-305-479-8365"],
@@ -119,7 +119,7 @@ export default function RootLayout({
                         "Vive la auténtica cultura cafetera Colombiana en un viaje de un día a la Hacienda Coloma, una joya ubicada en Fusagasugá a solo dos horas de Bogotá.",
                       provider: {
                         "@type": "LocalBusiness",
-                        name: "Chevere Bogotá Tours",
+                        name: "Chevere Bogotá Travel",
                       },
                       touristType: "Coffee Tourism",
                       duration: "PT8H",

@@ -15,7 +15,7 @@ export function TrasladosHero() {
       <div className="relative h-96 md:h-[500px] overflow-hidden">
         <Image
           src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=500&q=80"
-          alt="Servicios de traslados Chevere Bogotá Tours"
+          alt="Servicios de traslados Chevere Bogotá Travel"
           fill
           className="object-cover"
           priority

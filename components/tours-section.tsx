@@ -160,7 +160,7 @@ export function ToursSection() {
   }, [])
 
   return (
-    <section id="tours" className="py-20 bg-white">
+    <section id="tours" className="py-10 pt-0 bg-white">
       <div className="container mx-auto px-4">
         <div
           className="relative max-w-7xl mx-auto"
@@ -214,7 +214,7 @@ export function ToursSection() {
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
-                      <div className="absolute top-4 right-0 bg-amber-600 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg transform translate-x-full group-hover:translate-x-0 transition-transform duration-300">
+                      <div className="absolute top-4 right-0 bg-amber-600 text-white px-3 py-1 rounded-full text-sm font-semibold shadow-lg transform translate-x-full group-hover:-translate-x-2 transition-transform duration-300">
                         {tour.price || ""}
                       </div>
                     </div>

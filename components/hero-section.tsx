@@ -131,7 +131,7 @@ export function HeroSection() {
         <div className="mb-8 animate-fade-in-up hover:animate-bounce">
           <Image
             src="/logo.png"
-            alt="Chevere Bogotá Tours"
+            alt="Chevere Bogotá Travel"
             width={120}
             height={120}
             className="mx-auto mb-6 transition-transform duration-300 hover:scale-110"
@@ -158,7 +158,7 @@ export function HeroSection() {
               window.open(`https://wa.me/${number}?text=${text}`, "_blank")
             }}
             size="lg"
-            className="bg-green-600 hover:bg-green-700 hover:scale-105 text-white px-8 py-4 text-lg font-semibold transition-all duration-300 transform hover:shadow-2xl animate-pulse hover:animate-none"
+            className="bg-green-600 hover:bg-green-700 hover:scale-105 text-white px-8 py-4 text-lg font-semibold transition-all duration-300 transform hover:shadow-2xl animate-pulse hover:animate-none cursor-pointer"
           >
             {t?.hero?.whatsappText || hero?.whatsappText || (locale === 'en' ? 'Book via WhatsApp' : 'Reservar por WhatsApp')}
           </Button>
@@ -166,7 +166,7 @@ export function HeroSection() {
             onClick={handleScrollToTours}
             size="lg"
             variant="outline"
-            className="border-white text-white hover:bg-white hover:text-gray-900 hover:scale-105 px-8 py-4 text-lg font-semibold bg-transparent transition-all duration-300 transform hover:shadow-2xl hover:shadow-white/50"
+            className="border-white text-white hover:bg-white hover:text-gray-900 hover:scale-105 px-8 py-4 text-lg font-semibold bg-transparent transition-all duration-300 transform hover:shadow-2xl hover:shadow-white/50 cursor-pointer"
           >
             {t?.hero?.toursButtonText || hero?.toursButtonText || (locale === 'en' ? 'Tours Bogotá & surroundings' : 'Tours Bogotá y alrededores')}
           </Button>

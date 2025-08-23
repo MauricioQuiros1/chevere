@@ -7,11 +7,14 @@ import { tourDetailQuery, toursListQuery } from "@/lib/queries"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { WhatsAppFloat } from "@/components/whatsapp-float"
+import { TourScheduleFloat } from "@/components/tour-schedule-float"
+import { TourSchedule } from "@/components/tour-schedule"
 import { CustomTourContact } from "@/components/custom-tour-contact"
 import { TourIncludesRecommendations } from "@/components/tour-includes-recommendations"
 import { TourCarousel } from "@/components/tour-carousel"
-import { Clock, Users, MapPin, Star } from "lucide-react"
+import { Clock, Users, MapPin, Star, CreditCard } from "lucide-react"
 import { PortableText } from "@portabletext/react"
+import { ColombianSlogan } from "@/components/colombian-slogan"
 
 type Params = { tourId: string }
 
@@ -25,7 +28,7 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
   const tour = await sanityClient.fetch(tourDetailQuery, { id: tourId })
   if (!tour) return {}
   return {
-    title: `${tour.name} - Chevere Bogotá Tours`,
+    title: `${tour.name} - Chevere Bogotá Travel`,
     description: tour.brief,
     openGraph: {
       title: tour.name,
@@ -83,16 +86,7 @@ export default async function TourDetailPage({ params }: { params: Promise<Param
                   </div>
                 </div>
 
-                <a
-                  href={`https://wa.me/573054798365?text=${encodeURIComponent(
-                    `Hola, me interesa el tour "${tour.name}"`,
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-6 py-2 text-sm rounded-md"
-                >
-                  Reservar por WhatsApp
-                </a>
+                <TourSchedule tourName={tour.name} />
               </div>
             </div>
           </div>
@@ -142,7 +136,21 @@ export default async function TourDetailPage({ params }: { params: Promise<Param
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
               <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-4">Precios del Tour</h2>
-              <p className="text-lg text-gray-600">Selección según número de personas</p>
+              <div className="text-center mb-12">
+          <div className="flex items-center justify-center gap-4 text-lg text-gray-600">
+            <div className="flex items-center gap-2">
+              <CreditCard className="h-4 w-4" />
+              <span>Recibimos tarjetas de crédito y débito</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Star className="h-4 w-4" />
+              <span>Tours personalizados máx. 4 personas</span>
+            </div>
+          </div>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6 my-2">
+            Pregunta por nuestros descuentos para clientes empresariales y colombianos
+          </p>
+        </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
               {tour.pricingTiers.map((tier: any, idx: number) => (
@@ -176,8 +184,10 @@ export default async function TourDetailPage({ params }: { params: Promise<Param
       )}
 
       <CustomTourContact />
-      <WhatsAppFloat />
-      <Footer />
+  <ColombianSlogan />
+  {/* Botón flotante de agendar para páginas de tour */}
+  <TourScheduleFloat tourName={tour.name} />
+  <Footer />
     </main>
   )
 }

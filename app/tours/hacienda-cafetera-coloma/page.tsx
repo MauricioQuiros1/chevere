@@ -10,7 +10,7 @@ import { WhatsAppFloat } from "@/components/whatsapp-float"
 import { Footer } from "@/components/footer"
 
 export const metadata: Metadata = {
-  title: "Tour Hacienda Cafetera Coloma - Chevere Bogotá Tours",
+  title: "Tour Hacienda Cafetera Coloma - Chevere Bogotá Travel",
   description:
     "Vive la auténtica cultura cafetera colombiana en la Hacienda Coloma, Fusagasugá. Tour privado con degustación, almuerzo y transporte incluido.",
   keywords: "tour café Colombia, hacienda cafetera, Fusagasugá, cultura cafetera, tour privado Bogotá",
