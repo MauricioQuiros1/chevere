@@ -74,6 +74,39 @@ export function ServicesSection() {
   }, [])
 
   return (
-    
+    <section className="py-20 bg-white">
+      <div className="container mx-auto px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-4">Nuestros Servicios</h2>
+            <p className="text-gray-600">Transporte confiable y experiencias personalizadas en Bogotá</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {services.map((s, i) => {
+              const Icon = s.icon
+              return (
+                <div
+                  key={i}
+                  ref={(el) => {
+                    cardRefs.current[i] = el
+                  }}
+                  className={`transition-all duration-700 ${visibleCards[i] ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+                >
+                  <Card className="hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-0 shadow-lg">
+                    <CardContent className="p-8 text-center">
+                      <div className={`inline-flex p-4 rounded-full ${s.color} mb-6`}>
+                        <Icon className="h-8 w-8" />
+                      </div>
+                      <h3 className="text-xl font-semibold text-gray-900 mb-3">{s.title}</h3>
+                      <p className="text-gray-600">{s.description}</p>
+                    </CardContent>
+                  </Card>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+    </section>
   )
 }

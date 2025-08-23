@@ -3,6 +3,7 @@ import { Header } from "@/components/header"
 import { AboutHero } from "@/components/about-hero"
 import { AboutTeam } from "@/components/about-team"
 import { AboutValues } from "@/components/about-values"
+import { ColombianSlogan } from "@/components/colombian-slogan"
 import { Footer } from "@/components/footer"
 
 export const metadata: Metadata = {
@@ -24,6 +25,7 @@ export default function AboutPage() {
       <AboutHero />
       <AboutTeam />
       <AboutValues />
+  <ColombianSlogan />
       <Footer />
     </main>
   )

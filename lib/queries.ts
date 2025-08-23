@@ -140,3 +140,19 @@ export const toursSimpleListQuery = `
   people
 }
 `
+
+export const aboutPageQuery = `
+*[_type == "aboutPage"][0]{
+  heroTitle,
+  heroSubtitle,
+  founder{ name, role, description, badges, "image": coalesce(image.asset->url, imageUrl) },
+  stats[]{ icon, value, label },
+  teamTitle,
+  teamSubtitle,
+  teamCards[]{ icon, title, description },
+  founderHighlight{ title, subtitle, name, role, description, "image": coalesce(image.asset->url, imageUrl) },
+  valuesTitle,
+  valuesSubtitle,
+  values[]{ icon, title, description, colorClass }
+}
+`

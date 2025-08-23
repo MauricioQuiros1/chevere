@@ -7,6 +7,7 @@ import customTourForm from './customTourForm'
 import transfersSection from './transfersSection'
 import testimonialsSection from './testimonialsSection'
 import contactPage from './contactPage'
+import aboutPage from './aboutPage'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -18,5 +19,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
   transfersSection,
   testimonialsSection,
   contactPage,
+  aboutPage,
   ],
 }
