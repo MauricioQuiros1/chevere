@@ -1,59 +1,108 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ValidatedImage } from "@/components/image-validator"
-import { Plane, Clock, Users, MapPin, Shield, Star, Phone, MessageCircle } from "lucide-react"
+import { Plane, Clock, Users, Star, MessageCircle } from "lucide-react"
+import { sanityClient } from "@/lib/sanity"
+import { generalQuery, transfersSectionQuery } from "@/lib/queries"
 
-const airportServices = [
-  {
-    title: "Aeropuerto El Dorado ↔ Bogotá",
-    description: "Traslado directo desde/hacia el aeropuerto internacional",
-    price: "Desde $45.000 COP",
-    duration: "45-60 min",
-    capacity: "1-4 personas",
-    image: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600&h=400&fit=crop&crop=center",
-    features: ["Servicio 24/7", "Seguimiento de vuelo", "Conductor bilingüe", "Vehículo premium"],
-  },
-  {
-    title: "Aeropuerto ↔ Hoteles Zona Rosa",
-    description: "Conexión directa a la zona hotelera y comercial",
-    price: "Desde $50.000 COP",
-    duration: "50-70 min",
-    capacity: "1-4 personas",
-    image: "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=600&h=400&fit=crop&crop=center",
-    features: ["Recogida en terminal", "WiFi gratuito", "Agua cortesía", "Asistencia equipaje"],
-  },
-]
-
-const hourlyServices = [
-  {
-    title: "Servicio por Horas - Ciudad",
-    description: "Disponibilidad completa para múltiples destinos",
-    price: "Desde $35.000 COP/hora",
-    minHours: "Mínimo 3 horas",
-    capacity: "1-4 personas",
-    image: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=600&h=400&fit=crop&crop=center",
-    features: ["Conductor dedicado", "Rutas personalizadas", "Esperas incluidas", "Múltiples paradas"],
-  },
-  {
-    title: "Servicio Ejecutivo por Horas",
-    description: "Para reuniones de negocios y eventos corporativos",
-    price: "Desde $45.000 COP/hora",
-    minHours: "Mínimo 4 horas",
-    capacity: "1-4 personas",
-    image: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600&h=400&fit=crop&crop=center",
-    features: ["Vehículo ejecutivo", "Conductor formal", "Puntualidad garantizada", "Facturación empresarial"],
-  },
-]
+const FALLBACK = {
+  title: "Servicios de Traslados",
+  subtitle:
+    "Conectamos Bogotá con comodidad y seguridad. Desde el aeropuerto hasta servicios por horas para tus necesidades.",
+  airportServices: [
+    {
+      title: "Aeropuerto El Dorado ↔ Bogotá",
+      description: "Traslado directo desde/hacia el aeropuerto internacional",
+      price: "Desde $45.000 COP",
+      duration: "45-60 min",
+      capacity: "1-4 personas",
+      image:
+        "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600&h=400&fit=crop&crop=center",
+      features: [
+        "Servicio 24/7",
+        "Seguimiento de vuelo",
+        "Conductor bilingüe",
+        "Vehículo premium",
+      ],
+    },
+    {
+      title: "Aeropuerto ↔ Hoteles Zona Rosa",
+      description: "Conexión directa a la zona hotelera y comercial",
+      price: "Desde $50.000 COP",
+      duration: "50-70 min",
+      capacity: "1-4 personas",
+      image:
+        "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=600&h=400&fit=crop&crop=center",
+      features: [
+        "Recogida en terminal",
+        "WiFi gratuito",
+        "Agua cortesía",
+        "Asistencia equipaje",
+      ],
+    },
+  ],
+  hourlyServices: [
+    {
+      title: "Servicio por Horas - Ciudad",
+      description: "Disponibilidad completa para múltiples destinos",
+      price: "Desde $35.000 COP/hora",
+      minHours: "Mínimo 3 horas",
+      capacity: "1-4 personas",
+      image:
+        "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=600&h=400&fit=crop&crop=center",
+      features: [
+        "Conductor dedicado",
+        "Rutas personalizadas",
+        "Esperas incluidas",
+        "Múltiples paradas",
+      ],
+    },
+    {
+      title: "Servicio Ejecutivo por Horas",
+      description: "Para reuniones de negocios y eventos corporativos",
+      price: "Desde $45.000 COP/hora",
+      minHours: "Mínimo 4 horas",
+      capacity: "1-4 personas",
+      image:
+        "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600&h=400&fit=crop&crop=center",
+      features: [
+        "Vehículo ejecutivo",
+        "Conductor formal",
+        "Puntualidad garantizada",
+        "Facturación empresarial",
+      ],
+    },
+  ],
+}
 
 export function TrasladosSection() {
   const [activeTab, setActiveTab] = useState<"airport" | "hourly">("airport")
+  const [data, setData] = useState<any>(FALLBACK)
+  const [general, setGeneral] = useState<any>(null)
+
+  useEffect(() => {
+    let cancelled = false
+    const load = async () => {
+      const [cms, gen] = await Promise.all([
+        sanityClient.fetch(transfersSectionQuery),
+        sanityClient.fetch(generalQuery),
+      ])
+      if (!cancelled) setData(cms || FALLBACK)
+      if (!cancelled) setGeneral(gen || null)
+    }
+    load()
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   const handleWhatsAppContact = (service: string) => {
+    const raw = general?.whatsappNumbers?.[0] || "573184598635"
     const message = `Hola, me interesa información sobre ${service}`
-    window.open(`https://wa.me/573184598635?text=${encodeURIComponent(message)}`, "_blank")
+    window.open(`https://wa.me/${raw}?text=${encodeURIComponent(message)}`, "_blank")
   }
 
   return (
@@ -61,11 +110,8 @@ export function TrasladosSection() {
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4 font-serif md:text-5xl">Servicios de Traslados</h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Conectamos Bogotá con comodidad y seguridad. Desde el aeropuerto hasta servicios por horas para tus
-            necesidades.
-          </p>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4 font-serif md:text-5xl">{data.title}</h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">{data.subtitle}</p>
         </div>
 
         {/* Tab Navigation */}
@@ -94,7 +140,7 @@ export function TrasladosSection() {
 
         {/* Services Grid */}
         <div className="grid md:grid-cols-2 gap-8 mb-12">
-          {(activeTab === "airport" ? airportServices : hourlyServices).map((service, index) => (
+          {(activeTab === "airport" ? data.airportServices : data.hourlyServices).map((service: any, index: number) => (
             <Card key={index} className="overflow-hidden hover:shadow-xl transition-all duration-300 group">
               <div className="relative h-48 overflow-hidden">
                 <ValidatedImage
@@ -125,7 +171,7 @@ export function TrasladosSection() {
                 </div>
 
                 <div className="space-y-2 mb-6">
-                  {service.features.map((feature, idx) => (
+                  {service.features?.map((feature: string, idx: number) => (
                     <div key={idx} className="flex items-center text-sm text-gray-600">
                       <Star className="w-3 h-3 mr-2 text-amber-500 fill-current" />
                       {feature}
@@ -144,7 +190,6 @@ export function TrasladosSection() {
             </Card>
           ))}
         </div>
-
       </div>
     </section>
   )

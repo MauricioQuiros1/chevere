@@ -92,3 +92,18 @@ export const customTourFormQuery = `
   fields[]{name, label, type, placeholder, required}
 }
 `
+
+export const transfersSectionQuery = `
+*[_type == "transfersSection"][0]{
+  title,
+  subtitle,
+  airportServices[]{
+    title, description, price, duration, capacity, features,
+    "image": coalesce(image.asset->url, imageUrl)
+  },
+  hourlyServices[]{
+    title, description, price, minHours, capacity, features,
+    "image": coalesce(image.asset->url, imageUrl)
+  }
+}
+`
