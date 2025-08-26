@@ -89,20 +89,7 @@ export default {
         { icon: "star", title: "Experiencia Auténtica", description: "Te conectamos con la verdadera esencia de Colombia a través de lugares, sabores y tradiciones que solo los locales conocen." },
       ],
     },
-    {
-      name: "founderHighlight",
-      title: "Bloque Fundador (Destacado)",
-      type: "object",
-      fields: [
-        { name: "title", title: "Título", type: "string", initialValue: "Fundador y Director" },
-        { name: "subtitle", title: "Subtítulo", type: "string", initialValue: "Conoce a la persona que hace posible tus mejores experiencias" },
-        { name: "name", title: "Nombre", type: "string", initialValue: "Mauricio Quiros" },
-        { name: "role", title: "Cargo", type: "string", initialValue: "Fundador y Director" },
-        { name: "description", title: "Descripción", type: "text", rows: 4, initialValue: "Con más de 10 años de experiencia en turismo, Mauricio fundó Chevere Bogotá Travel con la misión de mostrar la verdadera esencia de Colombia. Su pasión por la hospitalidad y conocimiento profundo del país garantizan experiencias auténticas e inolvidables." },
-        { name: "image", title: "Imagen (asset)", type: "image", options: { hotspot: true } },
-        { name: "imageUrl", title: "Imagen (URL externa)", type: "url" },
-      ],
-    },
+  // Bloque Fundador (Destacado) eliminado
     { name: "valuesTitle", title: "Título (Nuestros Valores)", type: "string", initialValue: "Nuestros Valores" },
     {
       name: "valuesSubtitle",

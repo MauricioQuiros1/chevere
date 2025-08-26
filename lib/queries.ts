@@ -146,7 +146,6 @@ export const aboutPageQuery = `
   teamTitle,
   teamSubtitle,
   teamCards[]{ icon, title, description },
-  founderHighlight{ title, subtitle, name, role, description, "image": coalesce(image.asset->url, imageUrl) },
   valuesTitle,
   valuesSubtitle,
   values[]{ icon, title, description, colorClass }
