@@ -90,7 +90,7 @@ export function ToursSection() {
         }
         return prev + 1
       })
-    }, 4000)
+  }, 7000)
 
     return () => clearInterval(interval)
   }, [isAutoPlaying, maxSlide])
