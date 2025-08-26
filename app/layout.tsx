@@ -46,6 +46,12 @@ export const metadata: Metadata = {
     follow: true,
   },
   generator: "v0.app",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", type: "image/x-icon", sizes: "any" },
+    ],
+    shortcut: ["/favicon.ico"],
+  },
 }
 
 export default function RootLayout({
@@ -70,8 +76,8 @@ export default function RootLayout({
         />
 
   {/* Favicon */}
-  <link rel="icon" href="/favicon.ico" sizes="any" />
-  <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="icon" href="/favicon.ico?v=2" sizes="any" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico?v=2" type="image/x-icon" />
 
         <link rel="prefetch" href="/tours/hacienda-cafetera-coloma" />
         <link rel="prefetch" href="/nosotros" />
