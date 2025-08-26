@@ -7,6 +7,8 @@ export default {
     { name: "subtitle", title: "Subtítulo", type: "string", initialValue: "Conectamos Bogotá con comodidad y seguridad. Desde el aeropuerto hasta servicios por horas para tus necesidades." },
   { name: "airportTabTitle", title: "Título opción Aeropuerto", type: "string", initialValue: "Servicios Aeropuerto" },
   { name: "hourlyTabTitle", title: "Título opción Por Horas", type: "string", initialValue: "Servicios por Horas" },
+  { name: "heroImage", title: "Imagen principal (asset)", type: "image", options: { hotspot: true } },
+  { name: "heroImageUrl", title: "Imagen principal (URL externa)", type: "url" },
     {
       name: "airportTransfer",
       title: "Traslado Aeropuerto (único)",

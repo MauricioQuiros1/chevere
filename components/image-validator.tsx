@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect, useState } from "react"
 import Image from "next/image"
 
 interface ValidatedImageProps {
@@ -50,90 +50,39 @@ export function ValidatedImage({
   onError,
 }: ValidatedImageProps) {
   const [currentSrc, setCurrentSrc] = useState(src)
-  const [isValid, setIsValid] = useState(true)
   const [hasError, setHasError] = useState(false)
+  const [triedFallback, setTriedFallback] = useState(false)
 
-  const validateImage = (imageSrc: string): Promise<boolean> => {
-    return new Promise((resolve) => {
-      const img = new window.Image()
-      img.crossOrigin = "anonymous"
-
-      img.onload = () => {
-        // Check minimum dimensions (relaxed to 300x200px)
-        if (img.naturalWidth < 300 || img.naturalHeight < 200) {
-          console.warn(
-            `image-replaced: ${imageSrc} - dimensions too small (${img.naturalWidth}x${img.naturalHeight})`,
-          )
-          resolve(false)
-          return
-        }
-        resolve(true)
-      }
-
-      img.onerror = () => {
-        console.warn(`image-replaced: ${imageSrc} - failed to load`)
-        resolve(false)
-      }
-
-      img.src = imageSrc
-    })
-  }
-
+  // Si cambia el src o el fallback, reintenta con el nuevo src
   useEffect(() => {
-    const checkImage = async () => {
-      const isImageValid = await validateImage(src)
-
-      if (!isImageValid) {
-        setIsValid(false)
-        setHasError(true)
-
-        // Try fallback image if provided
-        if (fallbackSrc) {
-          const isFallbackValid = await validateImage(fallbackSrc)
-          if (isFallbackValid) {
-            setCurrentSrc(fallbackSrc)
-            setIsValid(true)
-      return
-          }
-        }
-
-    // As last resort, use local placeholder
-    const placeholder = "/placeholder.jpg"
-    setCurrentSrc(placeholder)
-    setIsValid(true)
-    onError?.()
-      }
-    }
-
-    checkImage()
-  }, [src, fallbackSrc, onError])
+    setCurrentSrc(src)
+    setHasError(false)
+    setTriedFallback(false)
+  }, [src, fallbackSrc])
 
   const handleImageError = async () => {
     if (!hasError) {
       setHasError(true)
       console.warn(`image-replaced: ${currentSrc} - runtime error`)
 
-      // Try fallback image
-      if (fallbackSrc && currentSrc !== fallbackSrc) {
-        const isFallbackValid = await validateImage(fallbackSrc)
-        if (isFallbackValid) {
-          setCurrentSrc(fallbackSrc)
-          return
-        }
+      // Intentar fallback si existe y no lo hemos usado aún
+      if (fallbackSrc && !triedFallback && currentSrc !== fallbackSrc) {
+        setTriedFallback(true)
+        setCurrentSrc(fallbackSrc)
+        return
       }
 
-      // Last resort: local placeholder
-      const placeholder = "/placeholder.jpg"
-      setCurrentSrc(placeholder)
-      setIsValid(true)
-      onError?.()
+      // Último recurso: placeholder local
+      if (currentSrc !== "/placeholder.jpg") {
+        setCurrentSrc("/placeholder.jpg")
+        onError?.()
+        return
+      }
     }
   }
 
   // Don't render invalid images
-  if (!isValid) {
-    return null
-  }
+  // Siempre intentamos renderizar; si falla, onError reemplaza el src
 
   return (
     <Image

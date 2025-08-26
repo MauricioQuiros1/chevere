@@ -41,6 +41,8 @@ async function main() {
       "Conectamos Bogotá con comodidad y seguridad. Desde el aeropuerto hasta servicios por horas para tus necesidades.",
     airportTabTitle: "Servicios Aeropuerto",
     hourlyTabTitle: "Servicios por Horas",
+    heroImageUrl:
+      "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=500&q=80",
     airportTransfer: {
       _type: "object",
       title: "Transporte Privado al Aeropuerto El Dorado",

@@ -96,6 +96,7 @@ export const transfersSectionQuery = `
   subtitle,
   airportTabTitle,
   hourlyTabTitle,
+  "heroImage": coalesce(heroImage.asset->url, heroImageUrl),
   airportTransfer{
     title, description, price, duration, capacity, features,
     "image": coalesce(image.asset->url, imageUrl)

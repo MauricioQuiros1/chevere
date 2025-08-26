@@ -1,12 +1,36 @@
 "use client"
 
 import Image from "next/image"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Clock, Shield, Car, Phone } from "lucide-react"
+import { sanityClient } from "@/lib/sanity"
+import { generalQuery, transfersSectionQuery } from "@/lib/queries"
 
 export function TrasladosHero() {
+  const [heroImage, setHeroImage] = useState<string | null>(null)
+  const [general, setGeneral] = useState<any>(null)
+
+  useEffect(() => {
+    let cancelled = false
+    const load = async () => {
+      const [cms, gen] = await Promise.all([
+        sanityClient.fetch(transfersSectionQuery),
+        sanityClient.fetch(generalQuery),
+      ])
+      if (!cancelled) setHeroImage(cms?.heroImage || null)
+      if (!cancelled) setGeneral(gen || null)
+    }
+    load()
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
   const handleWhatsAppContact = () => {
-    window.open("https://wa.me/573184598635?text=Hola, me interesa información sobre traslados", "_blank")
+    const number = general?.whatsappNumbers?.[0] || "573184598635"
+    const text = "Hola, me interesa información sobre traslados"
+    window.open(`https://wa.me/${number}?text=${encodeURIComponent(text)}`, "_blank")
   }
 
   return (
@@ -14,7 +38,10 @@ export function TrasladosHero() {
       {/* Hero Image */}
       <div className="relative h-96 md:h-[500px] overflow-hidden">
         <Image
-          src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=500&q=80"
+          src={
+            heroImage ||
+            "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&h=500&q=80"
+          }
           alt="Servicios de traslados Chevere Bogotá Travel"
           fill
           className="object-cover"

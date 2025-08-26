@@ -111,12 +111,12 @@ export function TrasladosSection() {
             if (!service) return null
             return (
               <Card className="w-full max-w-3xl overflow-hidden hover:shadow-xl transition-all duration-300 group">
-                <div className="relative h-48 overflow-hidden">
+        <div className="relative h-72 md:h-80 lg:h-[26rem] overflow-hidden bg-white">
                   <ValidatedImage
                     src={service.image}
                     alt={service.title}
                     fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+          className="object-contain group-hover:scale-105 transition-transform duration-300"
                     sizes="(max-width: 768px) 100vw, 50vw"
                   />
                   <div className="absolute top-4 right-4 bg-amber-600 text-white px-3 py-1 rounded-full text-sm font-medium">
