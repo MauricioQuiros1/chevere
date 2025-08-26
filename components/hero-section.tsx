@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { ValidatedImage } from "./image-validator"
 import { sanityClient } from "@/lib/sanity"
-import { heroQuery, translationsByLocale } from "@/lib/queries"
+import { heroQuery, translationsByLocale, generalQuery } from "@/lib/queries"
 import { useLocale } from "@/components/locale-provider"
 
 
@@ -36,6 +36,7 @@ export function HeroSection() {
   const [hero, setHero] = useState<HeroData | null>(null)
   const [t, setT] = useState<TranslationsDoc | null>(null)
   const [isMobile, setIsMobile] = useState<boolean>(false)
+  const [general, setGeneral] = useState<{ logoUrl?: string | null } | null>(null)
   
   // Compute effective images (prefer mobile/desktop set by viewport; fallback to the other if empty)
   const desk = hero?.desktopImages || []
@@ -46,11 +47,13 @@ export function HeroSection() {
   useEffect(() => {
     let cancelled = false
     const load = async () => {
-      const [heroData, transData] = await Promise.all([
+      const [heroData, transData, generalData] = await Promise.all([
         sanityClient.fetch(heroQuery),
         sanityClient.fetch(translationsByLocale, { locale }),
+        sanityClient.fetch(generalQuery),
       ])
       if (!cancelled) setHero(heroData || null)
+      if (!cancelled) setGeneral(generalData || null)
       if (!cancelled) {
         if (transData) setT(transData)
         else if (locale !== 'es') {
@@ -157,7 +160,7 @@ export function HeroSection() {
       <div className="relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
         <div className="mb-8 animate-fade-in-up hover:animate-bounce">
           <Image
-            src="/logo.png"
+            src={general?.logoUrl || "/logo.png"}
             alt="Chevere Bogotá Travel"
             width={120}
             height={120}

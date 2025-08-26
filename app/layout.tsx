@@ -69,6 +69,10 @@ export default function RootLayout({
           as="style"
         />
 
+  {/* Favicon */}
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+
         <link rel="prefetch" href="/tours/hacienda-cafetera-coloma" />
         <link rel="prefetch" href="/nosotros" />
         <link rel="prefetch" href="/galeria" />
