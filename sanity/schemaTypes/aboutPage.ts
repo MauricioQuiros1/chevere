@@ -1,6 +1,6 @@
 export default {
   name: "aboutPage",
-  title: "Página: Nosotros",
+  title: "Nosotros",
   type: "document",
   fields: [
     { name: "heroTitle", title: "Título (Hero)", type: "string", initialValue: "Conoce Nuestro Equipo" },

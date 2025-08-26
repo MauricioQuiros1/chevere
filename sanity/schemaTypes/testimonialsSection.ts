@@ -1,6 +1,6 @@
 export default {
   name: "testimonialsSection",
-  title: "Sección: Testimonios",
+  title: "Testimonios",
   type: "document",
   fields: [
     { name: "title", title: "Título", type: "string", initialValue: "Experiencias Reales Que Inspiran Confianza" },

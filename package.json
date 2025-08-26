@@ -11,7 +11,8 @@
   "seed:transfers": "node scripts/seed-transfers.cjs",
   "seed:testimonials": "node scripts/seed-testimonials.cjs",
   "seed:contact": "node scripts/seed-contact.cjs",
-  "seed:about": "node scripts/seed-about.cjs"
+  "seed:about": "node scripts/seed-about.cjs",
+  "seed:hero": "node scripts/seed-hero.cjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -74,6 +75,7 @@
     "zod": "3.25.67"
   },
   "devDependencies": {
+  "dotenv": "^16.4.5",
     "@tailwindcss/postcss": "^4.1.9",
     "@types/node": "^22",
     "@types/react": "^19",

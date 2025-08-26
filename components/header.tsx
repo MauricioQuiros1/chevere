@@ -249,8 +249,10 @@ export function Header() {
 
           {/* Mobile Menu */}
           <div
-            className={`lg:hidden overflow-hidden transition-all duration-300 ${
-              isMobileMenuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+            className={`lg:hidden transition-all duration-300 ${
+              isMobileMenuOpen
+                ? "max-h-[85vh] opacity-100 overflow-y-auto"
+                : "max-h-0 opacity-0 overflow-y-hidden"
             }`}
           >
             <nav className="pt-4 pb-2 space-y-2">
@@ -287,8 +289,8 @@ export function Header() {
 
                 <div
                   id="mobile-tours-submenu"
-                  className={`overflow-hidden transition-all ${
-                    mobileToursOpen ? "max-h-64 mt-1" : "max-h-0"
+                  className={`transition-all ${
+                    mobileToursOpen ? "max-h-40 mt-1 overflow-y-auto" : "max-h-0 overflow-hidden"
                   }`}
                 >
                   <div className="ml-2 rounded-md">

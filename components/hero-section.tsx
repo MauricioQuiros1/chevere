@@ -19,7 +19,8 @@ export function HeroSection() {
     whatsappText?: string | null
     toursButtonText?: string | null
     whatsappNumber?: string | null
-    images?: HeroImage[]
+  desktopImages?: HeroImage[]
+  mobileImages?: HeroImage[]
   }
 
   type TranslationsHero = {
@@ -34,6 +35,13 @@ export function HeroSection() {
 
   const [hero, setHero] = useState<HeroData | null>(null)
   const [t, setT] = useState<TranslationsDoc | null>(null)
+  const [isMobile, setIsMobile] = useState<boolean>(false)
+  
+  // Compute effective images (prefer mobile/desktop set by viewport; fallback to the other if empty)
+  const desk = hero?.desktopImages || []
+  const mob = hero?.mobileImages || []
+  const chosen = (isMobile ? mob : desk)
+  const effectiveImages = chosen.length > 0 ? chosen : (isMobile ? desk : mob)
 
   useEffect(() => {
     let cancelled = false
@@ -55,26 +63,41 @@ export function HeroSection() {
     return () => { cancelled = true }
   }, [locale])
 
+  // Detect viewport to choose image set (mobile vs desktop)
+  useEffect(() => {
+    const update = () => setIsMobile(window.matchMedia('(max-width: 767px)').matches)
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
+  }, [])
+
   // Slider interval: only run when there are at least 2 images
   useEffect(() => {
-    const images = hero?.images || []
-    if (images.length <= 1) return
+    const effective = effectiveImages
+    if (effective.length <= 1) return
     const timer = setInterval(() => {
-      setCurrentImage((prev) => (prev + 1) % images.length)
+      setCurrentImage((prev) => (prev + 1) % (effective.length))
     }, 5000)
     return () => clearInterval(timer)
-  }, [hero?.images])
+  }, [hero?.desktopImages, hero?.mobileImages, isMobile, effectiveImages.length])
+
+  // Clamp/reset currentImage when effectiveImages length changes
+  useEffect(() => {
+    if (currentImage >= effectiveImages.length) {
+      setCurrentImage(0)
+    }
+  }, [effectiveImages.length])
 
   const nextImage = () => {
-    const images = hero?.images || []
-    if (images.length === 0) return
-    setCurrentImage((prev) => (prev + 1) % images.length)
+    const effective = effectiveImages
+    if (effective.length === 0) return
+    setCurrentImage((prev) => (prev + 1) % effective.length)
   }
 
   const prevImage = () => {
-    const images = hero?.images || []
-    if (images.length === 0) return
-    setCurrentImage((prev) => (prev - 1 + images.length) % images.length)
+    const effective = effectiveImages
+    if (effective.length === 0) return
+    setCurrentImage((prev) => (prev - 1 + effective.length) % effective.length)
   }
 
   const handleScrollToTours = () => {
@@ -87,8 +110,8 @@ export function HeroSection() {
   return (
     <section className="relative h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image Slider */}
-      <div className="absolute inset-0">
-        {(hero?.images || []).map((image: HeroImage, index: number) => (
+      <div className="absolute inset-0 pointer-events-none">
+        {effectiveImages.map((image: HeroImage, index: number) => (
           <div
             key={index}
             className={`absolute inset-0 transition-opacity duration-1000 ${index === currentImage ? "opacity-100" : "opacity-0"
@@ -111,20 +134,24 @@ export function HeroSection() {
       </div>
 
       {/* Navigation Arrows */}
-      <button
-        onClick={prevImage}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/20 hover:bg-white/30 hover:scale-110 text-white p-2 rounded-full transition-all duration-300 transform hover:-translate-x-1"
-        aria-label="Imagen anterior"
-      >
-        <ChevronLeft className="h-6 w-6" />
-      </button>
-      <button
-        onClick={nextImage}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/20 hover:bg-white/30 hover:scale-110 text-white p-2 rounded-full transition-all duration-300 transform hover:translate-x-1"
-        aria-label="Siguiente imagen"
-      >
-        <ChevronRight className="h-6 w-6" />
-      </button>
+      {effectiveImages.length > 1 && (
+        <>
+          <button
+            onClick={prevImage}
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white/20 hover:bg-white/30 hover:scale-110 text-white p-2 rounded-full transition-all duration-300 transform hover:-translate-x-1"
+            aria-label="Imagen anterior"
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </button>
+          <button
+            onClick={nextImage}
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white/20 hover:bg-white/30 hover:scale-110 text-white p-2 rounded-full transition-all duration-300 transform hover:translate-x-1"
+            aria-label="Siguiente imagen"
+          >
+            <ChevronRight className="h-6 w-6" />
+          </button>
+        </>
+      )}
 
       {/* Content */}
       <div className="relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
@@ -174,17 +201,19 @@ export function HeroSection() {
       </div>
 
       {/* Slide Indicators */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex space-x-2">
-        {(hero?.images || []).map((_, index: number) => (
-          <button
-            key={index}
-            onClick={() => setCurrentImage(index)}
-            className={`w-3 h-3 rounded-full transition-all duration-300 transform hover:scale-150 ${index === currentImage ? "bg-white shadow-lg shadow-white/50 scale-125" : "bg-white/50 hover:bg-white/75"
-              }`}
-            aria-label={`Ir a imagen ${index + 1}`}
-          />
-        ))}
-      </div>
+      {effectiveImages.length > 1 && (
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex space-x-2 z-20">
+          {effectiveImages.map((_, index: number) => (
+            <button
+              key={index}
+              onClick={() => setCurrentImage(index)}
+              className={`w-3 h-3 rounded-full transition-all duration-300 transform hover:scale-150 ${index === currentImage ? "bg-white shadow-lg shadow-white/50 scale-125" : "bg-white/50 hover:bg-white/75"
+                }`}
+              aria-label={`Ir a imagen ${index + 1}`}
+            />
+          ))}
+        </div>
+      )}
     </section>
   )
 }

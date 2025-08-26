@@ -11,10 +11,9 @@ import aboutPage from './aboutPage'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
-    hero,
     general,
+    hero,
   tour,
-  translations,
   customTourForm,
   transfersSection,
   testimonialsSection,

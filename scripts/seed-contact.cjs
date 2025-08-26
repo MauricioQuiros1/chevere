@@ -1,3 +1,4 @@
+require('dotenv').config({ path: require('path').join(process.cwd(), '.env.local') })
 const { createClient } = require("@sanity/client")
 
 const PROJECT_ID = process.env.SANITY_PROJECT_ID || "nol0j9y7"

@@ -1,6 +1,6 @@
 export default {
   name: "contactPage",
-  title: "Página: Contacto",
+  title: "Contacto",
   type: "document",
   fields: [
     { name: "pageTitle", title: "Título de la página", type: "string", initialValue: "Contacto" },

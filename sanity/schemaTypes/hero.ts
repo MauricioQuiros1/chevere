@@ -1,6 +1,6 @@
 export default {
     name: "hero",
-    title: "Sección Hero",
+    title: "Sección Principal",
     type: "document",
     fields: [
         {
@@ -28,14 +28,31 @@ export default {
             description: "Número (formato internacional, sin +). Ej: 573054798365",
         },
         {
-            name: "images",
-            title: "Imágenes del Hero",
+            name: "desktopImages",
+            title: "Imágenes (Escritorio)",
+            description: "Imágenes a mostrar en pantallas de escritorio",
             type: "array",
             of: [
                 {
                     type: "object",
                     fields: [
-                        { name: "image", title: "Imagen", type: "image" },
+                        { name: "image", title: "Imagen", type: "image", options: { hotspot: true } },
+                        { name: "fallback", title: "URL alternativa", type: "url" },
+                        { name: "alt", title: "Texto alternativo", type: "string" },
+                    ],
+                },
+            ],
+        },
+        {
+            name: "mobileImages",
+            title: "Imágenes (Móvil)",
+            description: "Imágenes a mostrar en pantallas móviles",
+            type: "array",
+            of: [
+                {
+                    type: "object",
+                    fields: [
+                        { name: "image", title: "Imagen", type: "image", options: { hotspot: true } },
                         { name: "fallback", title: "URL alternativa", type: "url" },
                         { name: "alt", title: "Texto alternativo", type: "string" },
                     ],

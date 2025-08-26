@@ -1,8 +1,7 @@
 export const heroImagesQuery = `
-*[_type == "hero"][0].images[]{
-  "src": image.asset->url,
-  fallback,
-  alt
+*[_type == "hero"][0]{
+  desktopImages[]{"src": image.asset->url, fallback, alt},
+  mobileImages[]{"src": image.asset->url, fallback, alt}
 }
 `
 
@@ -12,11 +11,8 @@ export const heroQuery = `
   whatsappText,
   toursButtonText,
   whatsappNumber,
-  images[]{
-    "src": image.asset->url,
-    fallback,
-    alt
-  }
+  desktopImages[]{"src": image.asset->url, fallback, alt},
+  mobileImages[]{"src": image.asset->url, fallback, alt}
 }
 `
 
