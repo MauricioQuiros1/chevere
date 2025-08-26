@@ -94,11 +94,13 @@ export const transfersSectionQuery = `
 *[_type == "transfersSection"][0]{
   title,
   subtitle,
-  airportServices[]{
+  airportTabTitle,
+  hourlyTabTitle,
+  airportTransfer{
     title, description, price, duration, capacity, features,
     "image": coalesce(image.asset->url, imageUrl)
   },
-  hourlyServices[]{
+  hourlyTransfer{
     title, description, price, minHours, capacity, features,
     "image": coalesce(image.asset->url, imageUrl)
   }

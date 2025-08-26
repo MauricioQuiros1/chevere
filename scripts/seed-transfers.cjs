@@ -2,7 +2,7 @@ const { createClient } = require("@sanity/client")
 
 const PROJECT_ID = process.env.SANITY_PROJECT_ID || "nol0j9y7"
 const DATASET = process.env.SANITY_DATASET || "production"
-const TOKEN = process.env.SANITY_TOKEN
+const TOKEN = process.env.SANITY_TOKEN || 'sknjb0K031uABlS6X3eu8EIYN1i0xniS2Js64q0fUdssKTwl0EL7KeAMHGzrfyBGR899X0BAN9sM8DB2FJEKauiUJL8kpT0qRQAKdo2KBLTii4akx4AxoU2YyCfwHbYdtre2ryJwrIDz7pL7TOI5sS7yRX02Dr5hEZKbG08czZuxgFuNqlOr'
 
 if (!TOKEN) {
   console.error("Falta SANITY_TOKEN en el entorno (permiso write)")
@@ -17,80 +17,62 @@ const client = createClient({
   useCdn: false,
 })
 
+const fs = require("fs")
+const path = require("path")
+
 async function main() {
-  const doc = {
+  // Permite sobrescribir contenido desde data/transfers.json
+  const jsonPath = path.join(process.cwd(), "data", "transfers.json")
+  let payload = null
+  if (fs.existsSync(jsonPath)) {
+    try {
+      const raw = fs.readFileSync(jsonPath, "utf-8")
+      payload = JSON.parse(raw)
+      console.log("Usando contenido desde data/transfers.json")
+    } catch (e) {
+      console.warn("No se pudo parsear data/transfers.json, usando contenido por defecto")
+    }
+  }
+
+  const doc = payload ?? {
     _type: "transfersSection",
     title: "Servicios de Traslados",
     subtitle:
       "Conectamos Bogotá con comodidad y seguridad. Desde el aeropuerto hasta servicios por horas para tus necesidades.",
-    airportServices: [
-      {
-        _type: "object",
-        title: "Aeropuerto El Dorado ↔ Bogotá",
-        description: "Traslado directo desde/hacia el aeropuerto internacional",
-        price: "Desde $45.000 COP",
-        duration: "45-60 min",
-        capacity: "1-4 personas",
-        imageUrl:
-          "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600&h=400&fit=crop&crop=center",
-        features: [
-          "Servicio 24/7",
-          "Seguimiento de vuelo",
-          "Conductor bilingüe",
-          "Vehículo premium",
-        ],
-      },
-      {
-        _type: "object",
-        title: "Aeropuerto ↔ Hoteles Zona Rosa",
-        description: "Conexión directa a la zona hotelera y comercial",
-        price: "Desde $50.000 COP",
-        duration: "50-70 min",
-        capacity: "1-4 personas",
-        imageUrl:
-          "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=600&h=400&fit=crop&crop=center",
-        features: [
-          "Recogida en terminal",
-          "WiFi gratuito",
-          "Agua cortesía",
-          "Asistencia equipaje",
-        ],
-      },
-    ],
-    hourlyServices: [
-      {
-        _type: "object",
-        title: "Servicio por Horas - Ciudad",
-        description: "Disponibilidad completa para múltiples destinos",
-        price: "Desde $35.000 COP/hora",
-        minHours: "Mínimo 3 horas",
-        capacity: "1-4 personas",
-        imageUrl:
-          "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=600&h=400&fit=crop&crop=center",
-        features: [
-          "Conductor dedicado",
-          "Rutas personalizadas",
-          "Esperas incluidas",
-          "Múltiples paradas",
-        ],
-      },
-      {
-        _type: "object",
-        title: "Servicio Ejecutivo por Horas",
-        description: "Para reuniones de negocios y eventos corporativos",
-        price: "Desde $45.000 COP/hora",
-        minHours: "Mínimo 4 horas",
-        capacity: "1-4 personas",
-        imageUrl:
-          "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600&h=400&fit=crop&crop=center",
-        features: [
-          "Vehículo ejecutivo",
-          "Conductor formal",
-          "Puntualidad garantizada",
-          "Facturación empresarial",
-        ],
-      },
-    ],
+    airportTabTitle: "Servicios Aeropuerto",
+    hourlyTabTitle: "Servicios por Horas",
+    airportTransfer: {
+      _type: "object",
+      title: "Transporte Privado al Aeropuerto El Dorado",
+      description: "Traslado puerta a puerta desde y hacia el Aeropuerto Internacional El Dorado",
+      price: "Desde $45.000 COP",
+      duration: "45-60 min",
+      capacity: "1-4 personas",
+      imageUrl:
+        "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&h=500&fit=crop&crop=center",
+      features: [
+        "Servicio 24/7",
+        "Monitoreo de vuelos",
+        "Conductor profesional",
+        "Vehículo cómodo",
+      ],
+    },
+    hourlyTransfer: {
+      _type: "object",
+      title: "Servicio Privado por Horas",
+      description: "Conductor a disposición para múltiples destinos dentro de la ciudad",
+      price: "Desde $35.000 COP/hora",
+      minHours: "Mínimo 3 horas",
+      capacity: "1-4 personas",
+      imageUrl:
+        "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=500&fit=crop&crop=center",
+      features: [
+        "Rutas personalizadas",
+        "Esperas incluidas",
+        "Múltiples paradas",
+        "Conductor dedicado",
+      ],
+    },
   }
 
   const existing = await client.fetch("*[_type == 'transfersSection'][0]._id")

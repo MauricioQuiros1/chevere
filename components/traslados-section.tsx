@@ -12,70 +12,36 @@ const FALLBACK = {
   title: "Servicios de Traslados",
   subtitle:
     "Conectamos Bogotá con comodidad y seguridad. Desde el aeropuerto hasta servicios por horas para tus necesidades.",
-  airportServices: [
-    {
-      title: "Aeropuerto El Dorado ↔ Bogotá",
-      description: "Traslado directo desde/hacia el aeropuerto internacional",
-      price: "Desde $45.000 COP",
-      duration: "45-60 min",
-      capacity: "1-4 personas",
-      image:
-        "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600&h=400&fit=crop&crop=center",
-      features: [
-        "Servicio 24/7",
-        "Seguimiento de vuelo",
-        "Conductor bilingüe",
-        "Vehículo premium",
-      ],
-    },
-    {
-      title: "Aeropuerto ↔ Hoteles Zona Rosa",
-      description: "Conexión directa a la zona hotelera y comercial",
-      price: "Desde $50.000 COP",
-      duration: "50-70 min",
-      capacity: "1-4 personas",
-      image:
-        "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=600&h=400&fit=crop&crop=center",
-      features: [
-        "Recogida en terminal",
-        "WiFi gratuito",
-        "Agua cortesía",
-        "Asistencia equipaje",
-      ],
-    },
-  ],
-  hourlyServices: [
-    {
-      title: "Servicio por Horas - Ciudad",
-      description: "Disponibilidad completa para múltiples destinos",
-      price: "Desde $35.000 COP/hora",
-      minHours: "Mínimo 3 horas",
-      capacity: "1-4 personas",
-      image:
-        "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=600&h=400&fit=crop&crop=center",
-      features: [
-        "Conductor dedicado",
-        "Rutas personalizadas",
-        "Esperas incluidas",
-        "Múltiples paradas",
-      ],
-    },
-    {
-      title: "Servicio Ejecutivo por Horas",
-      description: "Para reuniones de negocios y eventos corporativos",
-      price: "Desde $45.000 COP/hora",
-      minHours: "Mínimo 4 horas",
-      capacity: "1-4 personas",
-      image:
-        "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=600&h=400&fit=crop&crop=center",
-      features: [
-        "Vehículo ejecutivo",
-        "Conductor formal",
-        "Puntualidad garantizada",
-        "Facturación empresarial",
-      ],
-    },
-  ],
+  airportTransfer: {
+    title: "Transporte Privado Aeropuerto El Dorado",
+    description: "Traslado puerta a puerta desde y hacia el Aeropuerto Internacional El Dorado",
+    price: "Desde $45.000 COP",
+    duration: "45-60 min",
+    capacity: "1-4 personas",
+    image:
+      "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&h=500&fit=crop&crop=center",
+    features: [
+      "Servicio 24/7",
+      "Monitoreo de vuelos",
+      "Conductor profesional",
+      "Vehículo cómodo",
+    ],
+  },
+  hourlyTransfer: {
+    title: "Servicio Privado por Horas",
+    description: "Conductor a disposición para múltiples destinos dentro de la ciudad",
+    price: "Desde $35.000 COP/hora",
+    minHours: "Mínimo 3 horas",
+    capacity: "1-4 personas",
+    image:
+      "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800&h=500&fit=crop&crop=center",
+    features: [
+      "Rutas personalizadas",
+      "Esperas incluidas",
+      "Múltiples paradas",
+      "Conductor dedicado",
+    ],
+  },
 }
 
 export function TrasladosSection() {
@@ -124,7 +90,7 @@ export function TrasladosSection() {
               }`}
             >
               <Plane className="inline-block w-4 h-4 mr-2" />
-              Servicios Aeropuerto
+              {data.airportTabTitle || "Servicios Aeropuerto"}
             </button>
             <button
               onClick={() => setActiveTab("hourly")}
@@ -133,62 +99,66 @@ export function TrasladosSection() {
               }`}
             >
               <Clock className="inline-block w-4 h-4 mr-2" />
-              Servicios por Horas
+              {data.hourlyTabTitle || "Servicios por Horas"}
             </button>
           </div>
         </div>
 
-        {/* Services Grid */}
-        <div className="grid md:grid-cols-2 gap-8 mb-12">
-          {(activeTab === "airport" ? data.airportServices : data.hourlyServices).map((service: any, index: number) => (
-            <Card key={index} className="overflow-hidden hover:shadow-xl transition-all duration-300 group">
-              <div className="relative h-48 overflow-hidden">
-                <ValidatedImage
-                  src={service.image}
-                  alt={service.title}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                />
-                <div className="absolute top-4 right-4 bg-amber-600 text-white px-3 py-1 rounded-full text-sm font-medium">
-                  {service.price}
-                </div>
-              </div>
-
-              <CardContent className="p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{service.title}</h3>
-                <p className="text-gray-600 mb-4">{service.description}</p>
-
-                <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
-                  <div className="flex items-center text-gray-500">
-                    <Clock className="w-4 h-4 mr-2" />
-                    {"duration" in service ? service.duration : (service as any).minHours}
-                  </div>
-                  <div className="flex items-center text-gray-500">
-                    <Users className="w-4 h-4 mr-2" />
-                    {service.capacity}
+  {/* Services Grid: 1 card por tipo, centrada */}
+  <div className="grid grid-cols-1 gap-8 mb-12 place-items-center">
+          {(() => {
+            const service = activeTab === "airport" ? data.airportTransfer : data.hourlyTransfer
+            if (!service) return null
+            return (
+              <Card className="w-full max-w-3xl overflow-hidden hover:shadow-xl transition-all duration-300 group">
+                <div className="relative h-48 overflow-hidden">
+                  <ValidatedImage
+                    src={service.image}
+                    alt={service.title}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
+                  <div className="absolute top-4 right-4 bg-amber-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                    {service.price}
                   </div>
                 </div>
 
-                <div className="space-y-2 mb-6">
-                  {service.features?.map((feature: string, idx: number) => (
-                    <div key={idx} className="flex items-center text-sm text-gray-600">
-                      <Star className="w-3 h-3 mr-2 text-amber-500 fill-current" />
-                      {feature}
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">{service.title}</h3>
+                  <p className="text-gray-600 mb-4">{service.description}</p>
+
+                  <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+                    <div className="flex items-center text-gray-500">
+                      <Clock className="w-4 h-4 mr-2" />
+                      {"duration" in service ? (service as any).duration : (service as any).minHours}
                     </div>
-                  ))}
-                </div>
+                    <div className="flex items-center text-gray-500">
+                      <Users className="w-4 h-4 mr-2" />
+                      {service.capacity}
+                    </div>
+                  </div>
 
-                <Button
-                  onClick={() => handleWhatsAppContact(service.title)}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white transition-all duration-250"
-                >
-                  <MessageCircle className="w-4 h-4 mr-2" />
-                  Reservar por WhatsApp
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
+                  <div className="space-y-2 mb-6">
+                    {service.features?.map((feature: string, idx: number) => (
+                      <div key={idx} className="flex items-center text-sm text-gray-600">
+                        <Star className="w-3 h-3 mr-2 text-amber-500 fill-current" />
+                        {feature}
+                      </div>
+                    ))}
+                  </div>
+
+                  <Button
+                    onClick={() => handleWhatsAppContact(service.title)}
+                    className="w-full bg-green-600 hover:bg-green-700 text-white transition-all duration-250"
+                  >
+                    <MessageCircle className="w-4 h-4 mr-2" />
+                    Reservar por WhatsApp
+                  </Button>
+                </CardContent>
+              </Card>
+            )
+          })()}
         </div>
       </div>
     </section>
