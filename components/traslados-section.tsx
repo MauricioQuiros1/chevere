@@ -183,8 +183,8 @@ export function TrasladosSection() {
           </div>
         </div>
 
-        {/* Nota e imagen de equipaje */}
-        {(data.luggageNote || data.luggageImage) && (
+  {/* Nota e imagen de equipaje: solo en pestaña Aeropuerto */}
+  {activeTab === "airport" && (data.luggageNote || data.luggageImage) && (
           <div className="max-w-3xl mx-auto mb-12">
             <p className="text-gray-800 text-justify leading-relaxed mb-6">
               {data.luggageNote || "Al momento de cotizar por favor especificar # de personas, tamaño y cantidad de equipaje."}
