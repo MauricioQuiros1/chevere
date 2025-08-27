@@ -43,7 +43,7 @@ export function TourPricing() {
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-4">Precios del Tour</h2>
-          <div className="flex items-center justify-center gap-4 text-lg text-gray-600">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-center gap-2 md:gap-4 text-base md:text-lg text-gray-600">
             <div className="flex items-center gap-2">
               <CreditCard className="h-4 w-4" />
               <span>Recibimos tarjetas de crédito y débito</span>
@@ -52,10 +52,10 @@ export function TourPricing() {
               <Star className="h-4 w-4" />
               <span>Tours personalizados máx. 4 personas</span>
             </div>
+            <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto md:ml-2 md:mt-0 mt-2">
+              Pregunta por nuestros descuentos para clientes empresariales y colombianos
+            </p>
           </div>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6 my-2">
-            Pregunta por nuestros descuentos para clientes empresariales y colombianos
-          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
