@@ -121,7 +121,7 @@ export function TrasladosSection() {
                       className="object-contain group-hover:scale-105 transition-transform duration-300"
                       sizes="(max-width: 768px) 100vw, 50vw"
                     />
-                    <div className="absolute top-4 right-4 bg-amber-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                    <div className="absolute top-4 left-4 bg-amber-600 text-white px-3 py-1 rounded-full text-sm font-medium">
                       {service.price}
                     </div>
                   </div>
@@ -146,10 +146,12 @@ export function TrasladosSection() {
           </div>
 
       {/* Columna derecha: precios apilados */}
-      <div className="flex justify-center md:justify-start w-full md:w-auto">
-            {(data.cards && data.cards.length > 0) && (
-        <div className="flex flex-col gap-4 w-full md:max-w-sm">
-                {data.cards.slice(0, 2).map((card: any, index: number) => (
+  <div className="flex justify-center md:justify-start w-full md:w-auto">
+    {(() => {
+      const list = (activeTab === "airport" ? data.airportCards : data.hourlyCards) || []
+      return list.length > 0 ? (
+    <div className="flex flex-col gap-4 w-full md:max-w-sm">
+        {list.slice(0, 2).map((card: any, index: number) => (
                   <Card
                     key={index}
                     className={`gap-0 relative hover:shadow-xl transition-all duration-300 hover:-translate-y-2 py-6 w-full ${
@@ -176,12 +178,13 @@ export function TrasladosSection() {
                   </Card>
                 ))}
               </div>
-            )}
+              ) : null
+            })()}
           </div>
         </div>
 
         {/* Nota e imagen de equipaje */}
-        {(data.cards && data.cards.length > 0) && (
+        {(data.luggageNote || data.luggageImage) && (
           <div className="max-w-3xl mx-auto mb-12">
             <p className="text-gray-800 text-justify leading-relaxed mb-6">
               {data.luggageNote || "Al momento de cotizar por favor especificar # de personas, tamaño y cantidad de equipaje."}

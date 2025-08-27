@@ -40,13 +40,32 @@ export default {
       preview: { select: { title: "title", subtitle: "price" } },
     },
     {
-      name: "cards",
-      title: "Tarjetas de Traslados (máx. 2)",
+      name: "airportCards",
+      title: "Tarjetas de precio — Aeropuerto (máx. 2)",
       type: "array",
       of: [
         {
           type: "object",
-          name: "card",
+          name: "priceCard",
+          fields: [
+            { name: "title", title: "Título", type: "string" },
+            { name: "price", title: "Precio", type: "string" },
+            { name: "ctaLabel", title: "Texto del botón", type: "string", initialValue: "Reservar por WhatsApp" },
+            { name: "popular", title: "Destacada (opcional)", type: "boolean", initialValue: false },
+          ],
+          preview: { select: { title: "title", subtitle: "price" } },
+        },
+      ],
+      validation: (Rule: any) => Rule.max(2),
+    },
+    {
+      name: "hourlyCards",
+      title: "Tarjetas de precio — Por horas (máx. 2)",
+      type: "array",
+      of: [
+        {
+          type: "object",
+          name: "priceCard",
           fields: [
             { name: "title", title: "Título", type: "string" },
             { name: "price", title: "Precio", type: "string" },
