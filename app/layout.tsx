@@ -48,9 +48,12 @@ export const metadata: Metadata = {
   generator: "v0.app",
   icons: {
     icon: [
-      { url: "/favicon.ico", type: "image/x-icon", sizes: "any" },
+      { url: "/favicon.ico?v=3", type: "image/x-icon", sizes: "any" },
+      { url: "/favicon-32x32.png?v=3", type: "image/png", sizes: "32x32" },
+      { url: "/favicon-16x16.png?v=3", type: "image/png", sizes: "16x16" },
     ],
-    shortcut: ["/favicon.ico"],
+    apple: [{ url: "/apple-touch-icon.png?v=3", sizes: "180x180" }],
+    shortcut: ["/favicon.ico?v=3"],
   },
 }
 
@@ -61,7 +64,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${inter.variable} ${playfair.variable} antialiased`}>
-      <head>
+  <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
@@ -75,9 +78,7 @@ export default function RootLayout({
           as="style"
         />
 
-  {/* Favicon */}
-  <link rel="icon" href="/favicon.ico?v=2" sizes="any" type="image/x-icon" />
-  <link rel="shortcut icon" href="/favicon.ico?v=2" type="image/x-icon" />
+  {/* Favicon handled by metadata.icons; explicit tags removed to avoid duplicates */}
 
         <link rel="prefetch" href="/tours/hacienda-cafetera-coloma" />
         <link rel="prefetch" href="/nosotros" />

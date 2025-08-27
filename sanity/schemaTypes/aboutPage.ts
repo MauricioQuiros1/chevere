@@ -28,13 +28,7 @@ export default {
         },
         { name: "image", title: "Imagen (asset)", type: "image", options: { hotspot: true } },
         { name: "imageUrl", title: "Imagen (URL externa)", type: "url" },
-        {
-          name: "badges",
-          title: "Insignias",
-          type: "array",
-          of: [{ type: "string" }],
-          initialValue: ["15+ años experiencia", "Guía certificado", "Experto local"],
-        },
+        
       ],
     },
     {

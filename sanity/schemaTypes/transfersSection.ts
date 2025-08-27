@@ -17,8 +17,6 @@ export default {
         { name: "title", title: "Título", type: "string" },
         { name: "description", title: "Descripción", type: "string" },
         { name: "price", title: "Precio", type: "string" },
-        { name: "duration", title: "Duración", type: "string" },
-        { name: "capacity", title: "Capacidad", type: "string" },
         { name: "image", title: "Imagen (asset)", type: "image", options: { hotspot: true } },
         { name: "imageUrl", title: "Imagen (URL externa)", type: "url" },
         { name: "features", title: "Características", type: "array", of: [{ type: "string" }] },

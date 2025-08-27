@@ -82,7 +82,7 @@ export function TrasladosSection() {
 
         {/* Tab Navigation */}
         <div className="flex justify-center mb-8">
-          <div className="bg-white rounded-lg p-1 shadow-md">
+          <div className="bg-white rounded-lg p-1 shadow-md flex">
             <button
               onClick={() => setActiveTab("airport")}
               className={`px-6 py-3 rounded-md font-medium transition-all duration-250 ${
@@ -111,12 +111,12 @@ export function TrasladosSection() {
             if (!service) return null
             return (
               <Card className="w-full max-w-3xl overflow-hidden hover:shadow-xl transition-all duration-300 group">
-        <div className="relative h-72 md:h-80 lg:h-[26rem] overflow-hidden bg-white">
+        <div className="relative h-68 md:h-80 lg:h-[32rem] overflow-hidden bg-white">
                   <ValidatedImage
                     src={service.image}
                     alt={service.title}
                     fill
-          className="object-contain group-hover:scale-105 transition-transform duration-300"
+          className="object-contain group-hover:scale-105 transition-transform duration-300 !h-auto"
                     sizes="(max-width: 768px) 100vw, 50vw"
                   />
                   <div className="absolute top-4 right-4 bg-amber-600 text-white px-3 py-1 rounded-full text-sm font-medium">
@@ -125,25 +125,21 @@ export function TrasladosSection() {
                 </div>
 
                 <CardContent className="p-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{service.title}</h3>
-                  <p className="text-gray-600 mb-4">{service.description}</p>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2 text-center md:text-left">{service.title}</h3>
+                  <p className="text-gray-600 mb-4 text-center md:text-left text-base md:text-[1.05rem] leading-relaxed">
+                    {service.description}
+                  </p>
 
-                  <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
-                    <div className="flex items-center text-gray-500">
-                      <Clock className="w-4 h-4 mr-2" />
-                      {"duration" in service ? (service as any).duration : (service as any).minHours}
-                    </div>
-                    <div className="flex items-center text-gray-500">
-                      <Users className="w-4 h-4 mr-2" />
-                      {service.capacity}
-                    </div>
-                  </div>
+                  
 
                   <div className="space-y-2 mb-6">
                     {service.features?.map((feature: string, idx: number) => (
-                      <div key={idx} className="flex items-center text-sm text-gray-600">
-                        <Star className="w-3 h-3 mr-2 text-amber-500 fill-current" />
-                        {feature}
+                      <div
+                        key={idx}
+                        className="flex items-center justify-start text-base text-gray-700"
+                      >
+                        <Star className="w-4 h-4 mr-2 text-amber-500 fill-current flex-shrink-0" />
+                        <span className="leading-6">{feature}</span>
                       </div>
                     ))}
                   </div>

@@ -51,15 +51,6 @@ export function AboutHero() {
                   {data.founder.description && (
                     <p className="text-gray-700 leading-relaxed mb-6">{data.founder.description}</p>
                   )}
-                  {Array.isArray(data.founder.badges) && data.founder.badges.length > 0 && (
-                    <div className="flex flex-wrap gap-3">
-                      {data.founder.badges.map((b: string, i: number) => (
-                        <span key={i} className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm font-medium">
-                          {b}
-                        </span>
-                      ))}
-                    </div>
-                  )}
                 </div>
               </div>
               {data.founder.image && (
