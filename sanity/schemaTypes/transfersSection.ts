@@ -39,5 +39,41 @@ export default {
       ],
       preview: { select: { title: "title", subtitle: "price" } },
     },
+    {
+      name: "cards",
+      title: "Tarjetas de Traslados (máx. 2)",
+      type: "array",
+      of: [
+        {
+          type: "object",
+          name: "card",
+          fields: [
+            { name: "title", title: "Título", type: "string" },
+            { name: "price", title: "Precio", type: "string" },
+            { name: "ctaLabel", title: "Texto del botón", type: "string", initialValue: "Reservar por WhatsApp" },
+            { name: "popular", title: "Destacada (opcional)", type: "boolean", initialValue: false },
+          ],
+          preview: { select: { title: "title", subtitle: "price" } },
+        },
+      ],
+      validation: (Rule: any) => Rule.max(2),
+    },
+    {
+      name: "luggageNote",
+      title: "Nota sobre equipaje",
+      type: "string",
+      initialValue: "Al momento de cotizar por favor especificar # de personas, tamaño y cantidad de equipaje.",
+    },
+    {
+      name: "luggageImage",
+      title: "Imagen de equipaje (asset)",
+      type: "image",
+      options: { hotspot: true },
+    },
+    {
+      name: "luggageImageUrl",
+      title: "Imagen de equipaje (URL externa)",
+      type: "url",
+    },
   ],
 }

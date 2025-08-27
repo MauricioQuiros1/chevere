@@ -97,6 +97,10 @@ export const transfersSectionQuery = `
   airportTabTitle,
   hourlyTabTitle,
   "heroImage": coalesce(heroImage.asset->url, heroImageUrl),
+  cards[]{ title, price, ctaLabel, popular },
+  luggageNote,
+  "luggageImage": coalesce(luggageImage.asset->url, luggageImageUrl),
+  "luggageDimensions": luggageImage.asset->metadata.dimensions,
   airportTransfer{
     title, description, price, duration, capacity, features,
     "image": coalesce(image.asset->url, imageUrl)

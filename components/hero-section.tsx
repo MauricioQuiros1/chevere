@@ -158,22 +158,22 @@ export function HeroSection() {
 
       {/* Content */}
       <div className="relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
-        <div className="mb-8 animate-fade-in-up hover:animate-bounce">
-          <Image
-            src={general?.logoUrl || "/logo.png"}
-            alt="Chevere Bogotá Travel"
-            width={120}
-            height={120}
-            className="mx-auto mb-6 transition-transform duration-300 hover:scale-110"
-          />
-        </div>
-
         <h1
           className="text-4xl md:text-6xl font-serif font-bold mb-12 animate-fade-in-up text-shadow-lg hover:text-shadow-xl transition-all duration-300"
           style={{ animationDelay: "0.2s" }}
         >
           {hero?.title || "Chevere Bogota Travel"}
         </h1>
+
+        <div className="mb-8 animate-fade-in-up hover:animate-bounce" style={{ animationDelay: "0.3s" }}>
+          <Image
+            src={general?.logoUrl || "/logo.png"}
+            alt="Chevere Bogotá Travel"
+            width={140}
+            height={140}
+            className="mx-auto mb-2 transition-transform duration-300 hover:scale-110"
+          />
+        </div>
 
         <div
           className="flex flex-col sm:flex-row gap-6 justify-center animate-fade-in-up"

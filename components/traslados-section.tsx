@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ValidatedImage } from "@/components/image-validator"
 import { Plane, Clock, Users, Star, MessageCircle } from "lucide-react"
 import { sanityClient } from "@/lib/sanity"
@@ -80,7 +80,7 @@ export function TrasladosSection() {
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">{data.subtitle}</p>
         </div>
 
-        {/* Tab Navigation */}
+        {/* Tab Navigation (se mantiene) */}
         <div className="flex justify-center mb-8">
           <div className="bg-white rounded-lg p-1 shadow-md flex">
             <button
@@ -104,58 +104,103 @@ export function TrasladosSection() {
           </div>
         </div>
 
-  {/* Services Grid: 1 card por tipo, centrada */}
-  <div className="grid grid-cols-1 gap-8 mb-12 place-items-center">
-          {(() => {
-            const service = activeTab === "airport" ? data.airportTransfer : data.hourlyTransfer
-            if (!service) return null
-            return (
-              <Card className="w-full max-w-3xl overflow-hidden hover:shadow-xl transition-all duration-300 group">
-        <div className="relative h-68 md:h-80 lg:h-[32rem] overflow-hidden bg-white">
-                  <ValidatedImage
-                    src={service.image}
-                    alt={service.title}
-                    fill
-          className="object-contain group-hover:scale-105 transition-transform duration-300 !h-auto"
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                  />
-                  <div className="absolute top-4 right-4 bg-amber-600 text-white px-3 py-1 rounded-full text-sm font-medium">
-                    {service.price}
-                  </div>
-                </div>
-
-                <CardContent className="p-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-2 text-center md:text-left">{service.title}</h3>
-                  <p className="text-gray-600 mb-4 text-center md:text-left text-base md:text-[1.05rem] leading-relaxed">
-                    {service.description}
-                  </p>
-
-                  
-
-                  <div className="space-y-2 mb-6">
-                    {service.features?.map((feature: string, idx: number) => (
-                      <div
-                        key={idx}
-                        className="flex items-center justify-start text-base text-gray-700"
-                      >
-                        <Star className="w-4 h-4 mr-2 text-amber-500 fill-current flex-shrink-0" />
-                        <span className="leading-6">{feature}</span>
-                      </div>
-                    ))}
+  {/* Layout principal con flex en desktop (sin grid) */}
+  <div className="flex flex-col md:flex-row gap-8 mb-12 items-start max-w-6xl mx-auto justify-center">
+          {/* Columna izquierda: card de servicio */}
+          <div className="flex justify-center md:justify-start">
+            {(() => {
+              const service = activeTab === "airport" ? data.airportTransfer : data.hourlyTransfer
+              if (!service) return null
+              return (
+                <Card className="w-full max-w-3xl overflow-hidden hover:shadow-xl transition-all duration-300 group">
+                  <div className="relative h-72 md:h-80 lg:h-[26rem] overflow-hidden bg-white">
+                    <ValidatedImage
+                      src={service.image}
+                      alt={service.title}
+                      fill
+                      className="object-contain group-hover:scale-105 transition-transform duration-300"
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                    />
+                    <div className="absolute top-4 right-4 bg-amber-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                      {service.price}
+                    </div>
                   </div>
 
-                  <Button
-                    onClick={() => handleWhatsAppContact(service.title)}
-                    className="w-full bg-green-600 hover:bg-green-700 text-white transition-all duration-250"
+                  <CardContent className="p-6">
+                    <h3 className="text-xl font-bold text-gray-900 mb-2 text-center ">{service.title}</h3>
+                    <p className="text-gray-600 mb-4 text-justify  text-base md:text-[1.05rem] leading-relaxed">
+                      {service.description}
+                    </p>
+                    <div className="space-y-2 mb-6">
+                      {service.features?.map((feature: string, idx: number) => (
+                        <div key={idx} className="flex items-center justify-start text-base text-gray-700">
+                          <Star className="w-4 h-4 mr-2 text-amber-500 fill-current flex-shrink-0" />
+                          <span className="leading-6">{feature}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )
+            })()}
+          </div>
+
+      {/* Columna derecha: precios apilados */}
+      <div className="flex justify-center md:justify-start w-full md:w-auto">
+            {(data.cards && data.cards.length > 0) && (
+        <div className="flex flex-col gap-4 w-full md:max-w-sm">
+                {data.cards.slice(0, 2).map((card: any, index: number) => (
+                  <Card
+                    key={index}
+                    className={`gap-0 relative hover:shadow-xl transition-all duration-300 hover:-translate-y-2 py-6 w-full ${
+                      card?.popular ? "ring-2 ring-amber-400 md:scale-[1.02]" : ""
+                    }`}
                   >
-                    <MessageCircle className="w-4 h-4 mr-2" />
-                    Reservar por WhatsApp
-                  </Button>
-                </CardContent>
-              </Card>
-            )
-          })()}
+                    <CardHeader className="text-center pb-4">
+                      <CardTitle className="text-xl font-semibold text-gray-900">{card.title}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-center">
+                      {card.price && (
+                        <div className="mb-6">
+                          <div className="text-3xl font-bold text-amber-700 mb-1">{card.price}</div>
+                        </div>
+                      )}
+                      <Button
+                        onClick={() => handleWhatsAppContact(card.title || "Traslado")}
+                        className={`w-full ${card?.popular ? "bg-amber-600 hover:bg-amber-700" : "bg-green-600 hover:bg-green-700"} text-white`}
+                      >
+                        <MessageCircle className="w-4 h-4 mr-2" />
+                        {card.ctaLabel || "Reservar por WhatsApp"}
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
+
+        {/* Nota e imagen de equipaje */}
+        {(data.cards && data.cards.length > 0) && (
+          <div className="max-w-3xl mx-auto mb-12">
+            <p className="text-gray-800 text-justify leading-relaxed mb-6">
+              {data.luggageNote || "Al momento de cotizar por favor especificar # de personas, tamaño y cantidad de equipaje."}
+            </p>
+            {data.luggageImage && (
+              <div className="flex justify-center">
+                <div className="group overflow-hidden rounded-md shadow-sm bg-white inline-block">
+                  <ValidatedImage
+                    src={data.luggageImage}
+                    alt="Equipaje — referencia"
+                    width={Math.round((data as any).luggageDimensions?.width || 800)}
+                    height={Math.round((data as any).luggageDimensions?.height || 500)}
+                    className="object-contain transition-transform duration-300 group-hover:scale-105 block"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </section>
   )
