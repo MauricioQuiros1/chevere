@@ -135,22 +135,38 @@ export function ContactForm() {
     e.preventDefault()
     setIsSubmitting(true)
 
-  const message = `Hola, me interesa contactarlos:
-    
-Nombre: ${formData.nombre}
-WhatsApp: ${formData.whatsapp}
-Email: ${formData.email}
-Servicio/Tour: ${formData.servicio}
-Fecha: ${formData.fecha}
-Número de personas: ${formData.personas}
-Mensaje: ${formData.mensaje}`
+    const selectedTourName = tours.find((t) => t.id === formData.servicio)?.name || formData.servicio
+    const waMessage = `Hola, me interesa contactarlos:\n\nNombre: ${formData.nombre}\nWhatsApp: ${formData.whatsapp}\nEmail: ${formData.email}\nServicio/Tour: ${selectedTourName}\nFecha: ${formData.fecha}\nNúmero de personas: ${formData.personas}\nMensaje: ${formData.mensaje}`
 
-    // Simulate loading delay for better UX
-    const raw = general?.whatsappNumbers?.[0] || "573184598635"
-    setTimeout(() => {
-      window.open(`https://wa.me/${raw}?text=${encodeURIComponent(message)}`, "_blank")
+    try {
+      // Enviar notificación por correo al backend
+      const res = await fetch('/api/custom-tour-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          data: {
+            ...formData,
+            servicioNombre: selectedTourName,
+            source: 'contact-form',
+            submittedAt: new Date().toISOString(),
+            userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : undefined,
+          },
+        }),
+      })
+
+      // Tomar el número de WhatsApp desde Sanity si existe; usar el devuelto por el API como respaldo
+      const json = await res.json().catch(() => ({}))
+      const waNumber = (general?.whatsappNumbers?.[0] || json?.wa || '573184598635') as string
+
+      // Redirigir a WhatsApp (misma pestaña)
+      window.location.href = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`
+    } catch (err) {
+      // En caso de error, redirigir de todas formas a WhatsApp con el número configurado
+      const waNumber = (general?.whatsappNumbers?.[0] || '573184598635') as string
+      window.location.href = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`
+    } finally {
       setIsSubmitting(false)
-    }, 1000)
+    }
   }
 
   const handleWhatsApp = () => {

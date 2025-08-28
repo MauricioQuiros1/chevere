@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Send, MessageCircle } from "lucide-react"
+import { Send } from "lucide-react"
 import { sanityClient } from "@/lib/sanity"
 import { customTourFormQuery, generalQuery } from "@/lib/queries"
 
@@ -19,7 +19,6 @@ export function CustomTourContact() {
   const [honeypot, setHoneypot] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle")
-  const [showWhatsAppButton, setShowWhatsAppButton] = useState(false)
 
   useEffect(() => {
     let cancelled = false
@@ -66,30 +65,42 @@ export function CustomTourContact() {
 
     setIsSubmitting(true)
     try {
+      // Normalizar correo para replyTo en backend
+      const normalizedEmail = formData["email"] || formData["correo"]
+      const payload = {
+        ...formData,
+        email: normalizedEmail || formData["email"],
+        contactEmail: normalizedEmail,
+        source: "custom-tour-contact",
+        submittedAt: new Date().toISOString(),
+      }
+
       const res = await fetch("/api/custom-tour-request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ data: formData }),
+        body: JSON.stringify({ data: payload }),
       })
-  const json = await res.json()
-  if (!json.ok) throw new Error("send-failed")
-      setSubmitStatus("success")
-      setShowWhatsAppButton(true)
+      const json = await res.json().catch(() => ({}))
+      if (!res.ok && !json?.ok) throw new Error("send-failed")
 
-  // Enviar correo (mailto) al email de General como fallback inmediato
-  const to = general?.email || "reservas@cheverebogotatravel.com"
-  const subject = "Solicitud de tour personalizado"
-  const labelByName: Record<string, string> = {}
-  for (const f of (config?.fields || [])) labelByName[f.name] = f.label || f.name
-  const bodyLines = Object.entries(formData).map(([k, v]) => `${labelByName[k] || k}: ${v}`)
-  const mailto = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join("\n"))}`
-  // Abrimos en nueva pestaña/cliente de correo
-  try { window.open(mailto, "_blank") } catch {}
+      // Construir mensaje para WhatsApp con etiquetas
+      const labelByName: Record<string, string> = {}
+      for (const f of (config?.fields || [])) labelByName[f.name] = f.label || f.name
+      const pairs = Object.entries(formData)
+        .map(([k, v]) => `${labelByName[k] || k}: ${v}`)
+        .join("\n")
+      const message = `Solicitud de tour personalizado\n\n${pairs}`
+
+      // Número de WhatsApp: prioriza Sanity, luego lo devuelto por el API, luego fallback
+      const waNumber = (general?.whatsappNumbers?.[0] || json?.wa || "573184598635") as string
+      // Abrir en nueva pestaña
+      try { window.open(`https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`, "_blank") } catch {}
+
+      setSubmitStatus("success")
       // opcional: reset después
       setTimeout(() => {
         setFormData({})
         setSubmitStatus("idle")
-        setShowWhatsAppButton(false)
       }, 5000)
     } catch (err) {
       setSubmitStatus("error")
@@ -97,17 +108,6 @@ export function CustomTourContact() {
     } finally {
       setIsSubmitting(false)
     }
-  }
-
-  const handleWhatsAppSend = () => {
-    const wa = general?.whatsappNumbers?.[0] || "573054798365"
-    const labelByName: Record<string, string> = {}
-    for (const f of (config?.fields || [])) labelByName[f.name] = f.label || f.name
-    const pairs = Object.entries(formData)
-      .map(([k, v]) => `${labelByName[k] || k}: ${v}`)
-      .join("\n")
-    const message = `Solicitud de tour personalizado\n\n${pairs}`
-    window.open(`https://wa.me/${wa}?text=${encodeURIComponent(message)}`, "_blank")
   }
 
   return (
@@ -187,16 +187,6 @@ export function CustomTourContact() {
                     )}
                   </Button>
 
-                  {showWhatsAppButton && (
-                    <Button
-                      type="button"
-                      onClick={handleWhatsAppSend}
-                      className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 text-lg font-semibold flex-1"
-                    >
-                      <MessageCircle className="h-5 w-5 mr-2" />
-                      Enviar por WhatsApp
-                    </Button>
-                  )}
                 </div>
 
                 {submitStatus === "success" && (
