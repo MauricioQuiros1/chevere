@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import Image from "next/image"
-import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { ValidatedImage } from "./image-validator"
 import { sanityClient } from "@/lib/sanity"
@@ -16,18 +15,11 @@ export function HeroSection() {
   type HeroImage = { src?: string | null; fallback?: string | null; alt?: string | null }
   type HeroData = {
     title?: string | null
-    whatsappText?: string | null
-    toursButtonText?: string | null
-    whatsappNumber?: string | null
-  desktopImages?: HeroImage[]
-  mobileImages?: HeroImage[]
+    desktopImages?: HeroImage[]
+    mobileImages?: HeroImage[]
   }
 
-  type TranslationsHero = {
-    title?: string | null
-    whatsappText?: string | null
-    toursButtonText?: string | null
-  }
+  type TranslationsHero = { title?: string | null }
   type TranslationsDoc = {
     locale?: string
     hero?: TranslationsHero
@@ -103,12 +95,7 @@ export function HeroSection() {
     setCurrentImage((prev) => (prev - 1 + effective.length) % effective.length)
   }
 
-  const handleScrollToTours = () => {
-    const toursSection = document.getElementById("tours")
-    if (toursSection) {
-      toursSection.scrollIntoView({ behavior: "smooth" })
-    }
-  }
+  const handleScrollToTours = () => {}
 
   return (
     <section className="relative h-screen flex items-center justify-center overflow-hidden">
@@ -157,9 +144,9 @@ export function HeroSection() {
       )}
 
       {/* Content */}
-      <div className="relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
+      <div className="relative z-10 text-center text-white px-4 max-w-3xl mx-auto">
         <h1
-          className="text-4xl md:text-6xl font-serif font-bold mb-12 animate-fade-in-up text-shadow-lg hover:text-shadow-xl transition-all duration-300"
+          className="text-3xl md:text-5xl font-serif font-bold mb-8 animate-fade-in-up text-shadow-lg hover:text-shadow-xl transition-all duration-300"
           style={{ animationDelay: "0.2s" }}
         >
           {hero?.title || "Chevere Bogota Travel"}
@@ -169,38 +156,12 @@ export function HeroSection() {
           <Image
             src={general?.logoUrl || "/logo.png"}
             alt="Chevere Bogotá Travel"
-            width={140}
-            height={140}
-            className="mx-auto mb-2 transition-transform duration-300 hover:scale-110"
+            width={96}
+            height={96}
+            className="mx-auto mb-2 transition-transform duration-300 hover:scale-110 opacity-95"
           />
         </div>
-
-        <div
-          className="flex flex-col sm:flex-row gap-6 justify-center animate-fade-in-up"
-          style={{ animationDelay: "0.4s" }}
-        >
-          <Button
-            onClick={() => {
-              const number = hero?.whatsappNumber || "573054798365"
-              const text = encodeURIComponent(
-                t?.hero?.whatsappText || hero?.whatsappText || (locale === 'en' ? 'Hello, I want to make a reservation' : 'Hola, quiero hacer una reserva')
-              )
-              window.open(`https://wa.me/${number}?text=${text}`, "_blank")
-            }}
-            size="lg"
-            className="bg-green-600 hover:bg-green-700 hover:scale-105 text-white px-8 py-4 text-lg font-semibold transition-all duration-300 transform hover:shadow-2xl animate-pulse hover:animate-none cursor-pointer"
-          >
-            {t?.hero?.whatsappText || hero?.whatsappText || (locale === 'en' ? 'Book via WhatsApp' : 'Reservar por WhatsApp')}
-          </Button>
-          <Button
-            onClick={handleScrollToTours}
-            size="lg"
-            variant="outline"
-            className="border-white text-white hover:bg-white hover:text-gray-900 hover:scale-105 px-8 py-4 text-lg font-semibold bg-transparent transition-all duration-300 transform hover:shadow-2xl hover:shadow-white/50 cursor-pointer"
-          >
-            {t?.hero?.toursButtonText || hero?.toursButtonText || (locale === 'en' ? 'Tours Bogotá & surroundings' : 'Tours Bogotá y alrededores')}
-          </Button>
-        </div>
+        {/* Botones removidos por solicitud */}
       </div>
 
       {/* Slide Indicators */}
