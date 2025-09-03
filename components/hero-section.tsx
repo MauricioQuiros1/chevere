@@ -144,7 +144,7 @@ export function HeroSection() {
       )}
 
       {/* Content */}
-      <div className="relative z-10 text-center text-white px-4 max-w-3xl mx-auto">
+  <div className="relative z-10 text-center text-white px-4 max-w-3xl mx-auto mt-40 md:mt-56">
         <h1
           className="text-3xl md:text-5xl font-serif font-bold mb-8 animate-fade-in-up text-shadow-lg hover:text-shadow-xl transition-all duration-300"
           style={{ animationDelay: "0.2s" }}
